@@ -1,7 +1,7 @@
 "use client"
 
 import { Container, Row, Col } from "react-bootstrap";
-import Product from "../components/Product"
+import Product from "../components/ProductCard"
 
 import products from "../products"
 
