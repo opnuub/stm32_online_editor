@@ -1,17 +1,40 @@
 "use client"
 
+import { useState, useEffect } from "react";
 import { Row, Col, ListGroup, Button, Card } from 'react-bootstrap'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import products from '../../products'
+import axios from 'axios'
+
+type Product = {
+    _id: string;
+    name: string;
+    image: string;
+    description: string;
+    brand: string;
+    category: string;
+    price: number;
+    countInStock: number;
+    rating: number;
+    numReviews: number;
+}
 
 export default function Product({
     params
 } : {
     params: { id: string }
 }) {
-    const product = products.find((p) => p._id == params.id)
+    const [product, setProduct] = useState<Product>();
+
+    useEffect(() => {
+        async function fetchProduct() {
+            const { data } = await axios.get(`http://127.0.0.1:8000/api/products/${params.id}/`);
+            setProduct(data);
+        }
+        fetchProduct();
+    }, [])
+
     return product ? (
         <div>
             <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
