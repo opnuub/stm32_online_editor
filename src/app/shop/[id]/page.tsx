@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Row, Col, ListGroup, Button, Card } from 'react-bootstrap'
+import { useRouter } from 'next/navigation'
+import { Row, Col, ListGroup, Button, Card, Form } from 'react-bootstrap'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import axios from 'axios'
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 
 type Product = {
     _id: string;
@@ -26,53 +28,100 @@ export default function Product({
     params: { id: string }
 }) {
     const [product, setProduct] = useState<Product>();
+    const [isLoading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [qty, setQty] = useState("1");
 
     useEffect(() => {
-        async function fetchProduct() {
-            const { data } = await axios.get(`http://127.0.0.1:8000/api/products/${params.id}/`);
-            setProduct(data);
-        }
-        fetchProduct();
+        fetch(`http://127.0.0.1:8000/api/products/${params.id}/`).then((res) => {
+            if (res.ok) {
+                res.json().then((data) => {
+                    setProduct(data);
+                    setLoading(false);
+                })
+            } else {
+                setErrorMessage(res.statusText);
+                setError(true);
+                setLoading(false);
+            }
+        })
     }, [])
 
-    return product ? (
-        <div>
-            <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
-            <Row>
-                <Col md={6}>
-                    <Image src={product.image} alt={product.name} width="0"
-                    height="0"
-                    sizes="100vw"
-                    style={{ width: '100%', height: 'auto' }} /> 
-                </Col>
-                <Col md={3}>
-                    <ListGroup variant="flush">
-                        <ListGroup.Item><h3>{product.name}</h3></ListGroup.Item>
-                        <ListGroup.Item>Description: {product.description}</ListGroup.Item>
-                    </ListGroup>
-                </Col>
-                <Col md={3}>
-                    <Card>
+
+    const router = useRouter()
+    const addToCart = () => {
+        router.push('/cart')
+    }
+
+    return isLoading ? <Loader />
+        : error ? <Message variant="danger">{errorMessage}</Message>
+        : product ? (
+            <div>
+                <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
+                <Row>
+                    <Col md={6}>
+                        <Image src={product.image} alt={product.name} width="0"
+                        height="0"
+                        sizes="100vw"
+                        style={{ width: '100%', height: 'auto' }} /> 
+                    </Col>
+                    <Col md={3}>
                         <ListGroup variant="flush">
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Price:</Col>
-                                    <Col><strong>${product.price}</strong></Col>
-                                </Row>
-                            </ListGroup.Item>
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Status:</Col>
-                                    <Col>{product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</Col>
-                                </Row>
-                            </ListGroup.Item>
-                            <ListGroup.Item>
-                                <Button className='btn-block' disabled={product.countInStock == 0} type='button' style={{ width: '100%', height: 'auto' }}>Add to Cart</Button>
-                            </ListGroup.Item>
+                            <ListGroup.Item><h3>{product.name}</h3></ListGroup.Item>
+                            <ListGroup.Item>Description: {product.description}</ListGroup.Item>
                         </ListGroup>
-                    </Card>
-                </Col>
-            </Row>
-        </div>
-    ) : <div><Link href='/' className='btn btn-light my-3'>Go Back</Link></div>
+                    </Col>
+                    <Col md={3}>
+                        <Card>
+                            <ListGroup variant="flush">
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>Price:</Col>
+                                        <Col className="d-flex justify-content-end"><strong>${product.price}</strong></Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>Status:</Col>
+                                        <Col className="d-flex justify-content-end">{product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                {product.countInStock > 0 && (
+                                    <ListGroup.Item>
+                                        <Row className="d-flex justify-content-between align-items-center">
+                                            <Col>Quantity:</Col>
+                                            <Col xs='auto' className="my-1">
+                                                <Form.Select
+                                                    size='sm'
+                                                    value={qty}
+                                                    onChange={(e) => setQty(e.target.value)}
+                                                >
+                                                    {
+                                                        [...Array(product.countInStock)].map((_, x: number) => (
+                                                            <option key={x+1} value={x+1}>{x+1}</option>
+                                                        ))
+                                                    }
+                                                </Form.Select>
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                )}
+                                <ListGroup.Item>
+                                    <Button 
+                                    onClick={addToCart}
+                                    className='btn-block' 
+                                    disabled={product.countInStock == 0} 
+                                    type='button' 
+                                    style={{ width: '100%', height: 'auto' }}
+                                    >
+                                        Add to Cart
+                                    </Button>
+                                </ListGroup.Item>
+                            </ListGroup>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        ) : <Message variant="danger">Product not found</Message>
 }
