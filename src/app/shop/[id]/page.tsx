@@ -12,7 +12,7 @@ import Message from "../../components/Message";
 type Product = {
     _id: string;
     name: string;
-    image: string;
+    image: any;
     description: string;
     brand: string;
     category: string;
@@ -53,6 +53,9 @@ export default function Product({
     const addToCart = () => {
         router.push('/cart')
     }
+    if (product) {
+        console.log(product.image)
+    }
 
     return isLoading ? <Loader />
         : error ? <Message variant="danger">{errorMessage}</Message>
@@ -61,7 +64,7 @@ export default function Product({
                 <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
                 <Row>
                     <Col md={6}>
-                        <Image src={product.image} alt={product.name} width="0"
+                        <Image src={`http://127.0.0.1:8000${product.image}`} alt={product.name} width="0"
                         height="0"
                         sizes="100vw"
                         style={{ width: '100%', height: 'auto' }} /> 

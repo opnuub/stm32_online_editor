@@ -9,7 +9,7 @@ export default function Product({
     return (
         <Card className="my-3 p-3 rounded">
             <a href={`/shop/${product._id}`}>
-                <Image src={product.image} alt={product.name} width="0"
+                <Image src={`http://127.0.0.1:8000${product.image}`} alt={product.name} width="0"
                 height="0"
                 sizes="100vw"
                 style={{ width: '100%', height: 'auto' }} /> 

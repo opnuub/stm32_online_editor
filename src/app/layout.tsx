@@ -33,7 +33,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Header />
-        <Container>{children}</Container>
+        <Container className="my-3">{children}</Container>
       </body>
     </html>
   );
