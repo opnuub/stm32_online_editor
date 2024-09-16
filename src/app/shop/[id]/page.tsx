@@ -59,7 +59,7 @@ export default function Product({
 
     return isLoading ? <Loader />
         : error ? <Message variant="danger">{errorMessage}</Message>
-        : product ? (
+        : product &&
             <div>
                 <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
                 <Row>
@@ -126,5 +126,4 @@ export default function Product({
                     </Col>
                 </Row>
             </div>
-        ) : <Message variant="danger">Product not found</Message>
 }

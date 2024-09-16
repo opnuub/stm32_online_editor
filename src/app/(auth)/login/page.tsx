@@ -55,7 +55,7 @@ export default function Login() {
             <Col className="my-1">
                 New Customer? <Link href='/register'>Register</Link>
             </Col>
-            { error ? <Message variant="danger">Wrong credentials or the user does not exist</Message> : <></>}
+            { error && <Message variant="danger">Wrong credentials or the user does not exist</Message>}
             <Form onSubmit={login}>
                 <Form.Group controlId='email'>
                     <Form.Label>Email Address</Form.Label>
