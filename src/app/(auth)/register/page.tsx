@@ -51,7 +51,7 @@ export default function Register() {
                 if (res.ok) {
                     res.json().then((data) => {
                         localStorage.setItem('userInfo', JSON.stringify(data))
-                        router.push('/');
+                        router.back();
                     })
                 } else {
                     setError(true);

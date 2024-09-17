@@ -33,38 +33,90 @@ export default function Cart() {
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [change, setChange] = useState(true)
 
     const router = useRouter()
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/cart/1/`).then((res) => {
-            if (res.ok) {
-                res.json().then((data: Product[]) => {
-                    data.forEach(product => {
-                        fetch(`http://127.0.0.1:8000/api/products/${product._id}/`).then(res => res.json()).then(data => {
-                            data.quantity = product.quantity;
-                            setCartItems([...cartItems, data]);
-                        }).catch(err => {
-                            setErrorMessage(err)
-                            setError(true)
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {    
+            fetch(`http://127.0.0.1:8000/api/cart/`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                },
+                }).then((res) => {
+                if (res.ok) {
+                    res.json().then((data: Product[]) => {
+                        data.forEach(product => {
+                            fetch(`http://127.0.0.1:8000/api/products/${product._id}/`).then(res => res.json()).then(data => {
+                                data.quantity = product.quantity;
+                                setCartItems([...cartItems, data]);
+                            }).catch(err => {
+                                setErrorMessage(err)
+                                setError(true)
+                            })
                         })
                     })
+                    setLoading(false);
+                } else {
+                    setErrorMessage(res.statusText);
+                    setError(true);
+                    setLoading(false);
+                }
+            })
+        } else {
+            setError(true)
+            setErrorMessage("Please log in")
+            setLoading(false);
+        }
+    }, [change])
+
+    const changeQuantity = (e:any, idx: string, qty: string) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {    
+            fetch("http://127.0.0.1:8000/api/cart/update/", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`
+                },
+                body: JSON.stringify({
+                    idx: idx,
+                    qty: qty,
                 })
-                setLoading(false);
-            } else {
-                setErrorMessage(res.statusText);
-                setError(true);
-                setLoading(false);
-            }
-        })
-    }, [])
-
-    const changeQuantity = (id, qty) => {
-
+            }).then((res) => res.json()).then((_) => {
+                setChange(!change)
+                setCartItems([])
+            })
+        } else {
+            router.back()
+        }
     }
 
-    const deleteItem = (id) => {
-
+    const deleteItem = (e: any, id: string) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {  
+            fetch("http://127.0.0.1:8000/api/cart/update/", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`
+                },
+                body: JSON.stringify({
+                    idx: id,
+                    qty: 0,
+                })
+            }).then((res) => res.json()).then((_) => {
+                setChange(!change)
+                setCartItems([])
+            })
+        } else {
+            router.back()
+        }
     }
 
     const checkout = () => {
@@ -103,7 +155,7 @@ export default function Cart() {
                                                 <Form.Select
                                                     size='sm'
                                                     value={item.quantity}
-                                                    onChange={(e) => changeQuantity(item._id, e.target.value)}
+                                                    onChange={(e) => changeQuantity(e, item._id, e.target.value)}
                                                 >
                                                     {
                                                         [...Array(item.countInStock)].map((_, x: number) => (
@@ -113,7 +165,7 @@ export default function Cart() {
                                                 </Form.Select>
                                             </Col>
                                             <Col md={1}>
-                                                <Button type='button' variant='light' onClick={() => deleteItem(item._id)}>
+                                                <Button type='button' variant='light' onClick={(e) => deleteItem(e, item._id)}>
                                                     <i className="fas fa-trash"></i>
                                                 </Button>
                                             </Col>

@@ -29,11 +29,16 @@ export default function Product({
 }) {
     const [product, setProduct] = useState<Product>();
     const [isLoading, setLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [qty, setQty] = useState("1");
 
     useEffect(() => {
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {
+            setIsLoggedIn(true)
+        }
         fetch(`http://127.0.0.1:8000/api/products/${params.id}/`).then((res) => {
             if (res.ok) {
                 res.json().then((data) => {
@@ -50,11 +55,32 @@ export default function Product({
 
 
     const router = useRouter()
-    const addToCart = () => {
-        router.push('/cart')
-    }
-    if (product) {
-        console.log(product.image)
+    const addToCart = (e: any) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo && product) {  
+            fetch("http://127.0.0.1:8000/api/cart/add/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`
+                },
+                body: JSON.stringify({
+                    idx: product._id,
+                    qty: qty,
+                })
+            }).then((res) => {
+                if (res.ok) {
+                    router.push('/cart')
+                } else {
+                    setError(true)
+                    setErrorMessage('Unknown error has occurred when adding item to cart')   
+                }
+            })
+        } else {
+            router.refresh()
+        }
+        
     }
 
     return isLoading ? <Loader />
@@ -110,9 +136,10 @@ export default function Product({
                                         </Row>
                                     </ListGroup.Item>
                                 )}
-                                <ListGroup.Item>
+                                {isLoggedIn ? ( 
+                                <ListGroup.Item >
                                     <Button 
-                                    onClick={addToCart}
+                                    onClick={(e) => addToCart(e)}
                                     className='btn-block' 
                                     disabled={product.countInStock == 0} 
                                     type='button' 
@@ -121,6 +148,9 @@ export default function Product({
                                         Add to Cart
                                     </Button>
                                 </ListGroup.Item>
+                                ): <ListGroup.Item>
+                                    <Row className="d-flex justify-content-center align-items-center">Log in before adding to Cart</Row>
+                                </ListGroup.Item>}
                             </ListGroup>
                         </Card>
                     </Col>
