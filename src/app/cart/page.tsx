@@ -119,8 +119,24 @@ export default function Cart() {
         }
     }
 
-    const checkout = () => {
-        router.push('/shipping')
+    const checkout = (e: any) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {  
+            fetch("http://127.0.0.1:8000/api/orders/add/", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`
+                },
+            }).then((res) => res.json()).then((data) => router.push(`/order/${data}`), (_) => {
+                setError(true)
+                setErrorMessage("Create order failed, try again")
+                setChange(!change)
+            })
+        } else {
+            router.back()
+        }
     }
 
     return isLoading ? <Loader /> : 
@@ -188,7 +204,7 @@ export default function Cart() {
                                         className="btn-block"
                                         style={{ width: '100%', height: 'auto' }}
                                         disabled={cartItems.length === 0}
-                                        onClick={() => checkout()}
+                                        onClick={(e) => checkout(e)}
                                     >
                                         Proceed To Checkout
                                     </Button>
