@@ -9,12 +9,12 @@ import Link from "next/link";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 
-interface Product {
+type Product = {
     _id: string;
     quantity: string;
 }
 
-interface FetchedProduct {
+type FetchedProduct = {
     _id: string;
     name: string;
     image: any;
@@ -52,7 +52,7 @@ export default function Cart() {
                         data.forEach(product => {
                             fetch(`http://127.0.0.1:8000/api/products/${product._id}/`).then(res => res.json()).then(data => {
                                 data.quantity = product.quantity;
-                                setCartItems([...cartItems, data]);
+                                setCartItems(cartItems => [...cartItems, data]);
                             }).catch(err => {
                                 setErrorMessage(err)
                                 setError(true)
@@ -151,8 +151,8 @@ export default function Cart() {
                             </Message>
                         ) : (
                             <ListGroup variant="flush">
-                                {cartItems.map(item => (
-                                    <ListGroup.Item key={item._id} >
+                                {cartItems.map((item, index) => (
+                                    <ListGroup.Item key={index} >
                                         <Row className="d-flex align-items-center">
                                             <Col md={2}>
                                                 <Image src={`http://127.0.0.1:8000${item.image}`}

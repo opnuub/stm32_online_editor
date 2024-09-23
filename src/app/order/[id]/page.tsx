@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Row, Col, ListGroup, Form, Button, Card } from "react-bootstrap";
-import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
 import Link from "next/link";
@@ -13,6 +12,8 @@ type OrderItem = {
     name: string
     product: number
     qty: number
+    image: string
+    price: number
 }
 
 type Order = {
@@ -40,7 +41,7 @@ export default function Order({
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [change, setChange] = useState(true)
+    const [change, setChange] = useState(false);
 
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
@@ -55,29 +56,61 @@ export default function Order({
                     if (res.ok) {
                         res.json().then((data) => {
                             setData(data);
-                            setLoading(false);
                         })
                     } else {
                         setError(true);
                         setErrorMessage("Unauthorised")
                     }
                 })
-            setLoading(false)
         } else {
             setError(true)
             setErrorMessage("Please log in")
-            setLoading(false);
         }
+        setLoading(false);
     }, [change])
+
+    const payment = (e: any) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {    
+            fetch(`http://127.0.0.1:8000/api/payment/init/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                },
+                body: JSON.stringify({
+                    orderId: params.id
+                })
+                }).then((res) => res.json()).then((data) => window.open(data["url"], '_blank'))
+        }
+    }
+
+    const verifyPayment = (e: any) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {    
+            fetch(`http://127.0.0.1:8000/api/payment/verify/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                },
+                body: JSON.stringify({
+                    orderId: params.id
+                })
+                }).then((res) => res.json()).then((_) => setChange(!change))
+        }
+    }
 
     return isLoading ? <Loader /> :
     error ? <Message variant="danger">{errorMessage}</Message> :
     data && (
         <>
             <Row>
-                <Col md={8}>
+                <Col md={9}>
                     <ListGroup variant='flush'>
-                        <h2>Order Summary</h2>
+                        <h2>Status</h2>
                         <ListGroup.Item>
                             <p>
                                 <strong>Shipping Address: </strong>
@@ -101,31 +134,69 @@ export default function Order({
                                     <Message variant='warning'>Not Paid</Message>
                                 )}
                         </ListGroup.Item>
-                        <ListGroup.Item>
-                                <h2>Order Items</h2>
-                                {data.orders.length === 0 ? <Message variant='info'>
-                                    Order is empty
-                        </Message> : (
-                                        <ListGroup variant='flush'>
-                                            {data.orders.map((item, index) => (
-                                                <ListGroup.Item key={index}>
-                                                    <Row>
-                                                        <Col md={1}>
-                                                        </Col>
-                                                        <Col>
-                                                            <Link href={`/shop/${item.product}`}>{item.name}</Link>
-                                                        </Col>
+                        <br></br>
+                        <h2>Order Items</h2>
+                        {data.orders.length === 0 ? <Message variant='info'>Order is empty</Message> 
+                        : (
+                            <ListGroup variant='flush'>
+                                {data.orders.map((item, index) => (
+                                    <ListGroup.Item key={index}>
+                                        <Row>
+                                            <Col md={1} className="d-flex justify-content-end">
+                                            <Image src={`http://127.0.0.1:8000${item.image}`} alt={item.name} width="0"
+                                                height="0"
+                                                sizes="100vw"
+                                                style={{ width: '100%', height: 'auto' }} /> 
+                                            </Col>
+                                            <Col>
+                                                <Link href={`/shop/${item.product}`}>{item.name}</Link>
+                                            </Col>
 
-                                                        <Col md={4}>
-                                                            {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                        </Col>
-                                                    </Row>
-                                                </ListGroup.Item>
-                                            ))}
-                                        </ListGroup>
-                                    )}
-                            </ListGroup.Item>
+                                            <Col md={4} className="d-flex justify-content-end">
+                                                {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        )}
                     </ListGroup>
+                </Col>
+                <Col md={3}>
+                    <Card>
+                        <ListGroup variant='flush'>
+                            <ListGroup.Item>
+                                <h2>Order Summary</h2>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Grand Total:</Col>
+                                    <Col>${data.totalPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+                            {!data.isPaid && (
+                                <>
+                                <ListGroup.Item>
+                                    <Button 
+                                    onClick={(e) => payment(e)}
+                                    className='btn-block' 
+                                    type='button' 
+                                    style={{ width: '100%', height: 'auto' }}
+                                    >
+                                        <i className="fa-brands fa-alipay"></i>
+                                    </Button>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>Already Paid?</Col>
+                                        <Col><Link href={`/order/${params.id}`} onClick={(e) => verifyPayment(e)}>Refresh</Link></Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                </>
+                            )}
+                        </ListGroup>
+                    </Card>
                 </Col>
             </Row>
         </>
