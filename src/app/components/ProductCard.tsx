@@ -1,10 +1,23 @@
 import { Card } from "react-bootstrap"
 import Image from 'next/image'
 
+type Product = {
+    _id: string;
+    name: string;
+    image: string;
+    description: string;
+    brand: string;
+    category: string;
+    price: number;
+    countInStock: number;
+    rating: number;
+    numReviews: number;
+}
+
 export default function Product({
     product,
 } : {
-    product: any
+    product: Product
 }) {
     return (
         <Card className="my-3 p-3 rounded">

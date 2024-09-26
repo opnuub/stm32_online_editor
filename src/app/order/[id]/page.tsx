@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Row, Col, ListGroup, Form, Button, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Button, Card } from "react-bootstrap";
 
 import Image from 'next/image'
 import Link from "next/link";
@@ -22,14 +22,14 @@ type Order = {
     shippingAddress: {
         address: string
     }
-    user: {}
+    user: object
     paymentMethod: string;
     totalPrice: string;
     isPaid: boolean;
-    paidAt: any;
+    paidAt: string;
     isDelivered: boolean;
-    deliveredAt: any;
-    createdAt: any;
+    deliveredAt: string;
+    createdAt: string;
 }
 
 export default function Order({
@@ -67,9 +67,9 @@ export default function Order({
             setErrorMessage("Please log in")
         }
         setLoading(false);
-    }, [change])
+    }, [change, params.id])
 
-    const payment = (e: any) => {
+    const payment = (e: React.FormEvent) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
@@ -86,7 +86,7 @@ export default function Order({
         }
     }
 
-    const verifyPayment = (e: any) => {
+    const verifyPayment = (e: React.FormEvent) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
@@ -99,7 +99,7 @@ export default function Order({
                 body: JSON.stringify({
                     orderId: params.id
                 })
-                }).then((res) => res.json()).then((_) => setChange(!change))
+                }).then((res) => res.json()).then(() => setChange(!change))
         }
     }
 

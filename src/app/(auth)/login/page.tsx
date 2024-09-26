@@ -23,9 +23,9 @@ export default function Login() {
         } else {
             setIsLoading(false);
         }
-    }, [])
+    }, [router])
 
-    const login = (e: any) => {
+    const login = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         fetch("http://127.0.0.1:8000/api/users/login/", {
             method: "POST",

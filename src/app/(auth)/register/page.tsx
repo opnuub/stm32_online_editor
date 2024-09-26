@@ -26,9 +26,9 @@ export default function Register() {
         } else {
             setIsLoading(false);
         }
-    }, [])
+    }, [router])
 
-    const register = (e: any) => {
+    const register = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (password != confirmPassword) {
             setError(true)

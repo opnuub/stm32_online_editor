@@ -12,7 +12,7 @@ import Message from "../../components/Message";
 type Product = {
     _id: string;
     name: string;
-    image: any;
+    image: string;
     description: string;
     brand: string;
     category: string;
@@ -51,11 +51,11 @@ export default function Product({
                 setLoading(false);
             }
         })
-    }, [])
+    }, [params.id])
 
 
     const router = useRouter()
-    const addToCart = (e: any) => {
+    const addToCart = (e: React.FormEvent) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo && product) {  

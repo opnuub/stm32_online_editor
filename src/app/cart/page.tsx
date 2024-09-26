@@ -17,7 +17,7 @@ type Product = {
 type FetchedProduct = {
     _id: string;
     name: string;
-    image: any;
+    image: string;
     description: string;
     brand: string;
     category: string;
@@ -73,7 +73,7 @@ export default function Cart() {
         }
     }, [change])
 
-    const changeQuantity = (e:any, idx: string, qty: string) => {
+    const changeQuantity = (e:React.FormEvent, idx: string, qty: string) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
@@ -87,7 +87,7 @@ export default function Cart() {
                     idx: idx,
                     qty: qty,
                 })
-            }).then((res) => res.json()).then((_) => {
+            }).then((res) => res.json()).then(() => {
                 setChange(!change)
                 setCartItems([])
             })
@@ -96,7 +96,7 @@ export default function Cart() {
         }
     }
 
-    const deleteItem = (e: any, id: string) => {
+    const deleteItem = (e: React.FormEvent, id: string) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
@@ -110,7 +110,7 @@ export default function Cart() {
                     idx: id,
                     qty: 0,
                 })
-            }).then((res) => res.json()).then((_) => {
+            }).then((res) => res.json()).then(() => {
                 setChange(!change)
                 setCartItems([])
             })
@@ -119,7 +119,7 @@ export default function Cart() {
         }
     }
 
-    const checkout = (e: any) => {
+    const checkout = (e: React.FormEvent) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
@@ -129,7 +129,7 @@ export default function Cart() {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${JSON.parse(userInfo).token}`
                 },
-            }).then((res) => res.json()).then((data) => router.push(`/order/${data}`), (_) => {
+            }).then((res) => res.json()).then((data) => router.push(`/order/${data}`), () => {
                 setError(true)
                 setErrorMessage("Create order failed, try again")
                 setChange(!change)

@@ -9,7 +9,7 @@ import Message from "../components/Message";
 type Product = {
     _id: string;
     name: string;
-    image: any;
+    image: string;
     description: string;
     brand: string;
     category: string;

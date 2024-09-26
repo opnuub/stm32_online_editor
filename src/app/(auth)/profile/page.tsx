@@ -10,12 +10,12 @@ import Message from "@/app/components/Message"
 
 type Order = {
     _id: string;
-    createdAt: any;
+    createdAt: string;
     totalPrice: number;
     isPaid: boolean;
-    paidAt: any;
+    paidAt: string;
     isDelivered: boolean;
-    deliveredAt: any;
+    deliveredAt: string;
 }
 
 export default function Profile() {
@@ -43,7 +43,7 @@ export default function Profile() {
             }).then((res) => res.json()).then((data) => {
                         setUsername(data.name)
                         setEmail(data.email)
-                    }, (_) => router.back())
+                    }, () => router.back())
             fetch("http://127.0.0.1:8000/api/orders/", {
                 method: "GET",
                 headers: {
@@ -55,9 +55,9 @@ export default function Profile() {
         } else {
             router.back();
         }
-    }, [])
+    }, [router])
 
-    const update = (e: any) => {
+    const update = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (password != confirmPassword) {
             setError(true)
