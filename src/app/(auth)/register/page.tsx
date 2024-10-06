@@ -37,7 +37,7 @@ export default function Register() {
             setError(true)
             setErrorMessage("Your password must be at least 8 characters")
         } else {
-            fetch("http://127.0.0.1:8000/api/users/register/", {
+            fetch("http://54.179.90.179:8000/api/users/register/", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

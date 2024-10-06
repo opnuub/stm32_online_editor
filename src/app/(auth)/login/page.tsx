@@ -27,7 +27,7 @@ export default function Login() {
 
     const login = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        fetch("http://127.0.0.1:8000/api/users/login/", {
+        fetch("http://54.179.90.179:8000/api/users/login/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
