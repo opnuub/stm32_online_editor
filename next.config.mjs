@@ -1,11 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     distDir: "build",
+    env: {
+      SERVER: process.env.SERVER,
+    },
     images: {
         remotePatterns: [
           {
             protocol: 'http',
-            hostname: '54.179.90.179',
+            hostname: process.env.HOST,
             port: '8000',
             pathname: '/images/**',
           },

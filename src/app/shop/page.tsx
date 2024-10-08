@@ -42,7 +42,7 @@ export default function Shop() {
 
     return (
         <div>
-            <h2>Products</h2>
+            <h2>商品目录</h2>
             {isLoading ? <Loader /> 
             : error ? <Message variant="danger">{errorMessage}</Message> 
             : <Row>

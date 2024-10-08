@@ -144,10 +144,10 @@ export default function Cart() {
             (
                 <Row>
                     <Col md={8}>
-                        <h2>Shopping Cart</h2>
+                        <h2>购物车</h2>
                         {cartItems.length === 0 ? (
                             <Message variant='info'>
-                                Your cart is empty
+                                购物车暂时是空的～
                             </Message>
                         ) : (
                             <ListGroup variant="flush">
@@ -195,7 +195,7 @@ export default function Cart() {
                         <Card>
                             <ListGroup variant="flush">
                                 <ListGroup.Item>
-                                    <h2>Subtotal</h2>
+                                    <h2>价格明细</h2>
                                     ${cartItems.reduce((acc, item) => acc + Number(item.quantity) * item.price, 0)}
                                 </ListGroup.Item>
                                 <ListGroup.Item>
@@ -206,7 +206,7 @@ export default function Cart() {
                                         disabled={cartItems.length === 0}
                                         onClick={(e) => checkout(e)}
                                     >
-                                        Proceed To Checkout
+                                        创建订单
                                     </Button>
                                 </ListGroup.Item>
                             </ListGroup>

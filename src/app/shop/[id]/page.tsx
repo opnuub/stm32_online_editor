@@ -87,7 +87,7 @@ export default function Product({
         : error ? <Message variant="danger">{errorMessage}</Message>
         : product &&
             <div>
-                <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
+                <Link href='/shop' className='btn btn-light my-3'>返回商品目录</Link>
                 <Row>
                     <Col md={6}>
                         <Image src={`${process.env.SERVER}${product.image}`} alt={product.name} width="0"
@@ -98,7 +98,7 @@ export default function Product({
                     <Col md={3}>
                         <ListGroup variant="flush">
                             <ListGroup.Item><h3>{product.name}</h3></ListGroup.Item>
-                            <ListGroup.Item>Description: {product.description}</ListGroup.Item>
+                            <ListGroup.Item><strong>商品详情：</strong><br></br>{product.description}</ListGroup.Item>
                         </ListGroup>
                     </Col>
                     <Col md={3}>
@@ -106,50 +106,47 @@ export default function Product({
                             <ListGroup variant="flush">
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col>Price:</Col>
-                                        <Col className="d-flex justify-content-end"><strong>${product.price}</strong></Col>
+                                        <Col>单价:</Col>
+                                        <Col className="d-flex justify-content-end"><strong>¥{product.price}</strong></Col>
                                     </Row>
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col>Status:</Col>
-                                        <Col className="d-flex justify-content-end">{product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</Col>
+                                        <Col>库存:</Col>
+                                        <Col className="d-flex justify-content-end">{product.countInStock}</Col>
                                     </Row>
                                 </ListGroup.Item>
-                                {product.countInStock > 0 && (
-                                    <ListGroup.Item>
-                                        <Row className="d-flex justify-content-between align-items-center">
-                                            <Col>Quantity:</Col>
-                                            <Col xs='auto' className="my-1">
-                                                <Form.Select
-                                                    size='sm'
-                                                    value={qty}
-                                                    onChange={(e) => setQty(e.target.value)}
-                                                >
-                                                    {
-                                                        [...Array(product.countInStock)].map((_, x: number) => (
-                                                            <option key={x+1} value={x+1}>{x+1}</option>
-                                                        ))
-                                                    }
-                                                </Form.Select>
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>
-                                )}
                                 {isLoggedIn ? ( 
                                 <ListGroup.Item >
-                                    <Button 
-                                    onClick={(e) => addToCart(e)}
-                                    className='btn-block' 
-                                    disabled={product.countInStock == 0} 
-                                    type='button' 
-                                    style={{ width: '100%', height: 'auto' }}
-                                    >
-                                        Add to Cart
-                                    </Button>
+                                    <Row>
+                                        <Col md={9}>
+                                            <Button 
+                                            onClick={(e) => addToCart(e)}
+                                            className='btn-block' 
+                                            disabled={product.countInStock == 0} 
+                                            type='button' 
+                                            style={{ width: '100%', height: 'auto' }}
+                                            >
+                                                加入购物车
+                                            </Button>
+                                        </Col>
+                                        <Col md={3}>
+                                            <Form.Select
+                                                size='sm'
+                                                value={qty}
+                                                onChange={(e) => setQty(e.target.value)}
+                                            >
+                                                {
+                                                    [...Array(product.countInStock)].map((_, x: number) => (
+                                                        <option key={x+1} value={x+1}>{x+1}</option>
+                                                    ))
+                                                }
+                                            </Form.Select>
+                                        </Col>
+                                    </Row>
                                 </ListGroup.Item>
                                 ): <ListGroup.Item>
-                                    <Row className="d-flex justify-content-center align-items-center">Log in before adding to Cart</Row>
+                                    <Row className="d-flex justify-content-center align-items-center">请先登陆</Row>
                                 </ListGroup.Item>}
                             </ListGroup>
                         </Card>

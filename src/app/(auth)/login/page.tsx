@@ -51,21 +51,21 @@ export default function Login() {
     return (
         isLoading ? <Loader /> :
         <Row className="justify-content-md-center">
-            <h2>Sign In</h2>
-            <Col className="my-1">
+            <h2>登陆</h2>
+            {/* <Col className="my-1">
                 New Customer? <Link href='/register'>Register</Link>
-            </Col>
-            { error && <Message variant="danger">Wrong credentials or the user does not exist</Message>}
+            </Col> */}
+            { error && <Message variant="danger">账户名或登录密码不正确，请重新输入</Message>}
             <Form onSubmit={login}>
                 <Form.Group controlId='email'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control type='email' placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)}></Form.Control>
+                    <Form.Label>账户名</Form.Label>
+                    <Form.Control type='text' placeholder="请输入账户名" value={email} onChange={(e) => setEmail(e.target.value)}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId='password'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type='password' placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)}></Form.Control>
+                    <Form.Label>密码</Form.Label>
+                    <Form.Control type='password' placeholder="请输入密码" value={password} onChange={(e) => setPassword(e.target.value)}></Form.Control>
                 </Form.Group>
-                <Button type='submit' variant='primary' className="my-2">Sign In</Button>
+                <Button type='submit' variant='primary' className="my-2">登陆</Button>
             </Form>
         </Row>
     )

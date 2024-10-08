@@ -101,41 +101,41 @@ export default function Profile() {
     return isLoading ? <Loader /> : (
         <Row>
             <Col md={3}>
-                <h2>User Profile</h2>
+                <h2>账号</h2>
                 <Form onSubmit={update}>
                     <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type='text' placeholder="Enter New Full Name" value={username} onChange={(e) => setUsername(e.target.value)}></Form.Control>
+                        <Form.Label>姓名</Form.Label>
+                        <Form.Control type='text' value={username} onChange={(e) => setUsername(e.target.value)}></Form.Control>
                     </Form.Group>
                     <Form.Group controlId='email'>
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control type='email' placeholder="Enter New Email" value={email} onChange={(e) => setEmail(e.target.value)}></Form.Control>
+                        <Form.Label>账户名</Form.Label>
+                        <Form.Control type='text' value={email} onChange={(e) => setEmail(e.target.value)}></Form.Control>
                     </Form.Group>
                     <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type='password' placeholder="New Password" value={password} onChange={(e) => setPassword(e.target.value)}></Form.Control>
+                        <Form.Label>新密码</Form.Label>
+                        <Form.Control type='password' placeholder="请输入新密码" value={password} onChange={(e) => setPassword(e.target.value)}></Form.Control>
                     </Form.Group>
                     <Form.Group controlId='confirm_password'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control type='password' placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}></Form.Control>
+                        <Form.Label>确认新密码</Form.Label>
+                        <Form.Control type='password' placeholder="请再次输入新密码" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}></Form.Control>
                     </Form.Group>
-                    <Button type='submit' variant='primary' className="my-2">Register</Button>
+                    <Button type='submit' variant='primary' className="my-2">更改密码</Button>
                 </Form>
                 { error && <Message variant="danger">{errorMessage}</Message>}
                 { success && <Message variant="success">Profile Details Updated</Message>}
             </Col>
             <Col md={9}>
-                <h2>My Orders</h2>
+                <h2>订单</h2>
                 {orders.length === 0 ? <Message variant="info">No orders made yet</Message> : (
                     <Table striped responsive className='table-sm'>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Paid</th>
-                                <th>Delivered</th>
-                                <th>Details</th>
+                                <th>订单号</th>
+                                <th>日期</th>
+                                <th>金额</th>
+                                <th>付款日期</th>
+                                <th>签收日期</th>
+                                <th>更多</th>
                             </tr>
                         </thead>
 
@@ -153,7 +153,7 @@ export default function Profile() {
                                     )}</td>
                                     <td>
                                         <Link href={`/order/${order._id}`}>
-                                            <Button className='btn-sm'>Details</Button>
+                                            <Button className='btn-sm'>订单详情</Button>
                                         </Link>
                                     </td>
                                 </tr>

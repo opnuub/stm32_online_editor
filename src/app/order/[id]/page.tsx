@@ -110,8 +110,8 @@ export default function Order({
             <Row>
                 <Col md={9}>
                     <ListGroup variant='flush'>
-                        <h2>Status</h2>
-                        <ListGroup.Item>
+                        <h2>订单状态</h2>
+                        {/* <ListGroup.Item>
                             <p>
                                 <strong>Shipping Address: </strong>
                                 {data.shippingAddress.address}
@@ -122,20 +122,19 @@ export default function Order({
                             ) : (
                                     <Message variant='warning'>Not Delivered</Message>
                                 )}
-                        </ListGroup.Item>
+                        </ListGroup.Item> */}
                         <ListGroup.Item>
                             <p>
-                                <strong>Payment Method: </strong>
+                                <strong>支付方式: </strong>
                                 {data.paymentMethod}
                             </p>
                             {data.isPaid ? (
                                 <Message variant='success'>{`Paid on ${data.paidAt}`}</Message>
                             ) : (
-                                    <Message variant='warning'>Not Paid</Message>
+                                    <Message variant='warning'>未支付</Message>
                                 )}
                         </ListGroup.Item>
                         <br></br>
-                        <h2>Order Items</h2>
                         {data.orders.length === 0 ? <Message variant='info'>Order is empty</Message> 
                         : (
                             <ListGroup variant='flush'>
@@ -153,7 +152,7 @@ export default function Order({
                                             </Col>
 
                                             <Col md={4} className="d-flex justify-content-end">
-                                                {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                {item.qty} X ¥{item.price} = ¥{(item.qty * item.price).toFixed(2)}
                                             </Col>
                                         </Row>
                                     </ListGroup.Item>
@@ -165,18 +164,18 @@ export default function Order({
                 <Col md={3}>
                     <Card>
                         <ListGroup variant='flush'>
-                            <ListGroup.Item>
-                                <h2>Order Summary</h2>
-                            </ListGroup.Item>
-
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Grand Total:</Col>
-                                    <Col>${data.totalPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
-                            {!data.isPaid && (
+                            {!data.isPaid ? (
                                 <>
+                                <ListGroup.Item>
+                                <h2>请支付</h2>
+                                </ListGroup.Item>
+
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>商品总价</Col>
+                                        <Col>¥{data.totalPrice}</Col>
+                                    </Row>
+                                </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Button 
                                     onClick={(e) => payment(e)}
@@ -189,8 +188,21 @@ export default function Order({
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col>Already Paid?</Col>
-                                        <Col><Link href={`/order/${params.id}`} onClick={(e) => verifyPayment(e)}>Refresh</Link></Col>
+                                        <Col>已支付？</Col>
+                                        <Col><Link href={`/order/${params.id}`} onClick={(e) => verifyPayment(e)}>刷新</Link></Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                </>
+                            ) : (
+                                <>
+                                <ListGroup.Item>
+                                <h2>支付完成</h2>
+                                </ListGroup.Item>
+
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>已支付</Col>
+                                        <Col>¥{data.totalPrice}</Col>
                                     </Row>
                                 </ListGroup.Item>
                                 </>

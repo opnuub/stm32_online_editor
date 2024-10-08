@@ -34,7 +34,7 @@ export default function Product({
                     </Card.Title>
                 </a>
                 <Card.Text as="h3">
-                    ${product.price}
+                    ¥{product.price}
                 </Card.Text>
             </Card.Body>
         </Card>

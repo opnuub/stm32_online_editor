@@ -12,7 +12,7 @@ export default function Loader() {
                 display:'block'
             }}
         >
-            <span className="sr-only">Loading...</span>
+            <span className="sr-only">加载中...</span>
         </Spinner>
     )
 }
