@@ -46,7 +46,7 @@ export default function Order({
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            fetch(`http://54.179.90.179:8000/api/orders/${params.id}/`, {
+            fetch(`${process.env.SERVER}/api/orders/${params.id}/`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export default function Order({
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            fetch(`http://54.179.90.179:8000/api/payment/init/`, {
+            fetch(`${process.env.SERVER}/api/payment/init/`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export default function Order({
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            fetch(`http://54.179.90.179:8000/api/payment/verify/`, {
+            fetch(`${process.env.SERVER}/api/payment/verify/`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

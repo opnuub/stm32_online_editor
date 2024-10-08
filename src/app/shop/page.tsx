@@ -26,7 +26,7 @@ export default function Shop() {
     const [errorMessage, setErrorMessage] = useState("");
     
     useEffect(() => {
-        fetch("http://54.179.90.179:8000/api/products/").then((res) => {
+        fetch(`${process.env.SERVER}/api/products/`).then((res) => {
             if (res.ok) {
                 res.json().then((data) => {
                     setProducts(data);

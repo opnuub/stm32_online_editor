@@ -40,7 +40,7 @@ export default function Cart() {
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            fetch(`http://54.179.90.179:8000/api/cart/`, {
+            fetch(`${process.env.SERVER}/api/cart/`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export default function Cart() {
                 if (res.ok) {
                     res.json().then((data: Product[]) => {
                         data.forEach(product => {
-                            fetch(`http://54.179.90.179:8000/api/products/${product._id}/`).then(res => res.json()).then(data => {
+                            fetch(`${process.env.SERVER}/api/products/${product._id}/`).then(res => res.json()).then(data => {
                                 data.quantity = product.quantity;
                                 setCartItems(cartItems => [...cartItems, data]);
                             }).catch(err => {
@@ -77,7 +77,7 @@ export default function Cart() {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            fetch("http://54.179.90.179:8000/api/cart/update/", {
+            fetch(`${process.env.SERVER}/api/cart/update/`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default function Cart() {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
-            fetch("http://54.179.90.179:8000/api/cart/update/", {
+            fetch(`${process.env.SERVER}/api/cart/update/`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ export default function Cart() {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
-            fetch("http://54.179.90.179:8000/api/orders/add/", {
+            fetch(`${process.env.SERVER}/api/orders/add/`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export default function Cart() {
                                     <ListGroup.Item key={index} >
                                         <Row className="d-flex align-items-center">
                                             <Col md={2}>
-                                                <Image src={`http://127.0.0.1:8000${item.image}`}
+                                                <Image src={`${process.env.SERVER}${item.image}`}
                                                 alt={item.name} width="0"
                                                 height="0"
                                                 sizes="100vw"

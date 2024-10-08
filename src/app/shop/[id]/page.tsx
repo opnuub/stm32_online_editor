@@ -39,7 +39,7 @@ export default function Product({
         if (userInfo) {
             setIsLoggedIn(true)
         }
-        fetch(`http://54.179.90.179:8000/api/products/${params.id}/`).then((res) => {
+        fetch(`${process.env.SERVER}/api/products/${params.id}/`).then((res) => {
             if (res.ok) {
                 res.json().then((data) => {
                     setProduct(data);
@@ -59,7 +59,7 @@ export default function Product({
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo && product) {  
-            fetch("http://54.179.90.179:8000/api/cart/add/", {
+            fetch(`${process.env.SERVER}/api/cart/add/`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export default function Product({
                 <Link href='/shop' className='btn btn-light my-3'>Go Back</Link>
                 <Row>
                     <Col md={6}>
-                        <Image src={`http://54.179.90.179:8000${product.image}`} alt={product.name} width="0"
+                        <Image src={`${process.env.SERVER}${product.image}`} alt={product.name} width="0"
                         height="0"
                         sizes="100vw"
                         style={{ width: '100%', height: 'auto' }} /> 

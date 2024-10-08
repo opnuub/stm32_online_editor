@@ -34,7 +34,7 @@ export default function Profile() {
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {       
-            fetch("http://54.179.90.179:8000/api/users/profile/", {
+            fetch(`${process.env.SERVER}/api/users/profile/`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export default function Profile() {
                         setUsername(data.name)
                         setEmail(data.email)
                     }, () => router.back())
-            fetch("http://54.179.90.179:8000/api/orders/", {
+            fetch(`${process.env.SERVER}/api/orders/`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export default function Profile() {
         } else {
             const userInfo = localStorage.getItem("userInfo")
             if (userInfo) {
-                fetch("http://54.179.90.179:8000/api/users/update/", {
+                fetch(`${process.env.SERVER}/api/users/update/`, {
                     method: "PUT",
                     headers: {
                         'Content-Type': 'application/json',
