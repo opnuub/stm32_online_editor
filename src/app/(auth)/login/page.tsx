@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Form, Button, Row, Col } from 'react-bootstrap'
+import { Form, Button, Row } from 'react-bootstrap'
 import { useRouter } from "next/navigation";
 
-import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
 import Message from "@/app/components/Message";
 import Loader from "@/app/components/Loader";
 
@@ -18,7 +18,12 @@ export default function Login() {
 
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
-        if (userInfo) {       
+        if (userInfo) {
+            const decodedToken = jwtDecode(JSON.parse(userInfo).token);
+            const currentTime = Date.now() / 1000;
+            if (decodedToken.exp) {
+                (decodedToken.exp < currentTime) ? localStorage.removeItem("userInfo") : router.back()
+            };       
             router.back();
         } else {
             setIsLoading(false);

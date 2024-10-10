@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Row, Col, ListGroup, Form, Button, Card } from "react-bootstrap";
 import { useRouter } from 'next/navigation'
+import { jwtDecode } from "jwt-decode";
 
 import Image from 'next/image'
 import Link from "next/link";
@@ -40,6 +41,14 @@ export default function Cart() {
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
+            const decodedToken = jwtDecode(JSON.parse(userInfo).token);
+            const currentTime = Date.now() / 1000;
+            if (decodedToken.exp) {
+                if (decodedToken.exp < currentTime) {
+                    localStorage.removeItem("userInfo")
+                    router.push("/login")
+                }
+            };       
             fetch(`${process.env.SERVER}/api/cart/`, {
                 method: "GET",
                 headers: {

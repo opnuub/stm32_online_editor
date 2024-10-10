@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
 export default function Header() {
   const [userInfo, setUserInfo] = useState("")
@@ -10,7 +11,15 @@ export default function Header() {
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo')
     if (userInfo) {
-      setUserInfo(userInfo)
+      const decodedToken = jwtDecode(JSON.parse(userInfo).token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp) {
+          if (decodedToken.exp < currentTime) {
+            localStorage.removeItem("userInfo")
+          } else {
+            setUserInfo(userInfo)
+          }
+      }
     }
   }, [])
   const router = useRouter()
@@ -36,7 +45,7 @@ export default function Header() {
                     <NavDropdown.Item onClick={() => router.push('/profile')}><i className="fa-regular fa-user"></i> 账号</NavDropdown.Item>
                     <NavDropdown.Item onClick={logout}><i className="fa-solid fa-right-from-bracket"></i> 退出</NavDropdown.Item>
                   </NavDropdown>
-                ): <Nav.Link href="/login"><i className="fa-solid fa-user"></i> Login</Nav.Link>}
+                ): <Nav.Link href="/login"><i className="fa-solid fa-user"></i> 登陆</Nav.Link>}
             </Nav>
             </Navbar.Collapse>
         </Container>

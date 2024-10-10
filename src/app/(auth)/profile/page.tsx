@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Form, Button, Row, Col, Table } from "react-bootstrap"
+import { jwtDecode } from "jwt-decode"
 
 import Link from "next/link"
 import Loader from "@/app/components/Loader"
@@ -34,6 +35,14 @@ export default function Profile() {
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {       
+            const decodedToken = jwtDecode(JSON.parse(userInfo).token);
+            const currentTime = Date.now() / 1000;
+            if (decodedToken.exp) {
+                if (decodedToken.exp < currentTime) {
+                    localStorage.removeItem("userInfo")
+                    router.push("/login")
+                }
+            };       
             fetch(`${process.env.SERVER}/api/users/profile/`, {
                 method: "GET",
                 headers: {

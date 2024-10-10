@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'
 import { Row, Col, ListGroup, Button, Card, Form } from 'react-bootstrap'
+import { jwtDecode } from "jwt-decode";
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -37,7 +38,16 @@ export default function Product({
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {
-            setIsLoggedIn(true)
+            const decodedToken = jwtDecode(JSON.parse(userInfo).token);
+            const currentTime = Date.now() / 1000;
+            if (decodedToken.exp) {
+                if (decodedToken.exp < currentTime) {
+                    localStorage.removeItem("userInfo")
+                    router.push("/login")
+                } else {
+                    setIsLoggedIn(true)
+                }
+            }; 
         }
         fetch(`${process.env.SERVER}/api/products/${params.id}/`).then((res) => {
             if (res.ok) {

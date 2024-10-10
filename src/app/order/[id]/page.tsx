@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Row, Col, ListGroup, Button, Card } from "react-bootstrap";
+import { jwtDecode } from "jwt-decode";
 
 import Image from 'next/image'
 import Link from "next/link";
@@ -46,25 +47,35 @@ export default function Order({
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            fetch(`${process.env.SERVER}/api/orders/${params.id}/`, {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${JSON.parse(userInfo).token}`,
-                },
-                }).then((res) => {
-                    if (res.ok) {
-                        res.json().then((data) => {
-                            setData(data);
+            const decodedToken = jwtDecode(JSON.parse(userInfo).token);
+            const currentTime = Date.now() / 1000;
+            if (decodedToken.exp) {
+                if (decodedToken.exp < currentTime) {
+                    localStorage.removeItem("userInfo")
+                    setError(true)
+                    setErrorMessage("请重新登陆")
+                } else {
+                    fetch(`${process.env.SERVER}/api/orders/${params.id}/`, {
+                        method: "GET",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                        },
+                        }).then((res) => {
+                            if (res.ok) {
+                                res.json().then((data) => {
+                                    setData(data);
+                                })
+                            } else {
+                                setError(true);
+                                setErrorMessage("Unauthorised")
+                            }
                         })
-                    } else {
-                        setError(true);
-                        setErrorMessage("Unauthorised")
-                    }
-                })
+                }
+            };       
         } else {
             setError(true)
-            setErrorMessage("Please log in")
+            setErrorMessage("请登陆")
         }
         setLoading(false);
     }, [change, params.id])
