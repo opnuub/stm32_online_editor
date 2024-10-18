@@ -22,10 +22,10 @@ export default function Product({
     return (
         <Card className="my-3 p-3 rounded">
             <a href={`/shop/${product._id}`}>
-                <Image src={`${process.env.SERVER}${product.image}`} alt={product.name} width="0"
+                <Image src={`${process.env.SERVER}/static${product.image}`} alt={product.name} width="0"
                 height="0"
                 sizes="100vw"
-                style={{ width: '100%', height: 'auto' }} /> 
+                style={{ width: '100%', height: 'auto' }} unoptimized /> 
             </a>
             <Card.Body>
                 <a href={`/shop/${product._id}`}>
