@@ -164,11 +164,11 @@ export default function Cart() {
                                     <ListGroup.Item key={index} >
                                         <Row className="d-flex align-items-center">
                                             <Col md={2}>
-                                                <Image src={`${process.env.SERVER}${item.image}`}
+                                                <Image src={`${process.env.SERVER}/static${item.image}`}
                                                 alt={item.name} width="0"
                                                 height="0"
                                                 sizes="100vw"
-                                                style={{ width: '100%', height: 'auto', margin: "10px 0px 0px 0px"}}/>
+                                                style={{ width: '100%', height: 'auto', margin: "10px 0px 0px 0px"}} unoptimized/>
                                             </Col>
                                             <Col md={3}>
                                                 <Link href={`/shop/${item._id}`}>{item.name}</Link>

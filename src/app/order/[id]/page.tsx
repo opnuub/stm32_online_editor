@@ -153,10 +153,10 @@ export default function Order({
                                     <ListGroup.Item key={index}>
                                         <Row>
                                             <Col md={1} className="d-flex justify-content-end">
-                                            <Image src={`http://127.0.0.1:8000${item.image}`} alt={item.name} width="0"
+                                            <Image src={`${process.env.SERVER}/static${item.image}`} alt={item.name} width="0"
                                                 height="0"
                                                 sizes="100vw"
-                                                style={{ width: '100%', height: 'auto' }} /> 
+                                                style={{ width: '100%', height: 'auto' }} unoptimized/> 
                                             </Col>
                                             <Col>
                                                 <Link href={`/shop/${item.product}`}>{item.name}</Link>
