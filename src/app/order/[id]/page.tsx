@@ -159,7 +159,7 @@ export default function Order({
                                                 style={{ width: '100%', height: 'auto' }} unoptimized/> 
                                             </Col>
                                             <Col>
-                                                <Link href={`/shop/${item.product}`}>{item.name}</Link>
+                                                <Link href={`/product/${item.product}`}>{item.name}</Link>
                                             </Col>
 
                                             <Col md={4} className="d-flex justify-content-end">

@@ -97,7 +97,7 @@ export default function Product({
         : error ? <Message variant="danger">{errorMessage}</Message>
         : product &&
             <div>
-                <Link href='/shop' className='btn btn-light my-3'>返回商品目录</Link>
+                <Link href='/' className='btn btn-light my-3'>返回商品目录</Link>
                 <Row>
                     <Col md={6}>
                         <Image src={`${process.env.SERVER}/static${product.image}`} alt={product.name} width="0"

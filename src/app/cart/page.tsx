@@ -171,7 +171,7 @@ export default function Cart() {
                                                 style={{ width: '100%', height: 'auto', margin: "10px 0px 0px 0px"}} unoptimized/>
                                             </Col>
                                             <Col md={3}>
-                                                <Link href={`/shop/${item._id}`}>{item.name}</Link>
+                                                <Link href={`/product/${item._id}`}>{item.name}</Link>
                                             </Col>
                                             <Col md={2}>
                                                 ${item.price}
