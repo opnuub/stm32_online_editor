@@ -38,7 +38,7 @@ export default function Header() {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-                <Nav.Link href="/shop"><i className="fas fa-shopping-cart"></i> 商店</Nav.Link>
+                {userInfo && <Nav.Link href="/shop"><i className="fas fa-shopping-cart"></i> 购物车</Nav.Link>}
                 {/* <Nav.Link href="/code"><i className="fa-solid fa-code"></i> Code</Nav.Link> */}
                 {userInfo ? (
                   <NavDropdown title={JSON.parse(userInfo).name} id='username'>
