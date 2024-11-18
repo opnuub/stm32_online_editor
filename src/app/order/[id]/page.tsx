@@ -93,7 +93,16 @@ export default function Order({
                 body: JSON.stringify({
                     orderId: params.id
                 })
-                }).then((res) => res.json()).then((data) => window.open(data["url"], '_blank'))
+                }).then((res) => res.json()).then((data) => {
+			const a = document.createElement("a");
+			a.style.display = "none";
+			document.body.appendChild(a);
+			a.href = data["url"];
+			a.target = "_blank";
+			a.rel = 'noopener noreferrer';
+			a.click();
+			document.body.removeChild(a);
+		})
         }
     }
 
