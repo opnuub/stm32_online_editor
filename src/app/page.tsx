@@ -42,19 +42,27 @@ export default function Shop() {
     }, [])
 
     return (
-        <div>
-            <h2>商品目录</h2>
-            {isLoading ? <Loader /> 
-            : error ? <Message variant="danger">{errorMessage}</Message> 
-            : <Row>
-                {products.map((product: Product) => (
-                    <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                        <Product product={product} />
-                    </Col>
-                ))}
-              </Row>
-            } 
-            <Footer />
-        </div>
+            <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "90vh",
+            }}
+            >
+            <div style={{flex: 1}}>
+                <h2>商品目录</h2>
+                    {isLoading ? <Loader /> 
+                    : error ? <Message variant="danger">{errorMessage}</Message> 
+                    : <Row>
+                        {products.map((product: Product) => (
+                            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                                <Product product={product} />
+                            </Col>
+                        ))}
+                    </Row>
+                    } 
+                </div>
+                <Footer />
+            </div>
     )
 }

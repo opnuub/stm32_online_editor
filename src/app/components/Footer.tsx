@@ -1,16 +1,16 @@
 "use client"
 
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+
 export default function Footer() {
     return (
         <footer
-        style={{
-            position: "absolute",
-            bottom: 0,
-            padding: "1rem 1rem",
-            textAlign: "left",
-        }}
+            style={{
+            padding: "0.5rem 0.5rem",
+            }}
         >
-        <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
             <a
             href="https://img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"
             target="_blank"
