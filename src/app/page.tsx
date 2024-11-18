@@ -5,6 +5,7 @@ import { Row, Col } from "react-bootstrap";
 import Product from "./components/ProductCard"
 import Loader from "./components/Loader";
 import Message from "./components/Message";
+import Footer from "./components/Footer";
 
 type Product = {
     _id: string;
@@ -53,6 +54,7 @@ export default function Shop() {
                 ))}
               </Row>
             } 
+            <Footer />
         </div>
     )
 }

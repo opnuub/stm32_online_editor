@@ -1,0 +1,43 @@
+"use client"
+
+import Link from "next/link";
+
+export default function Footer() {
+    return (
+        <footer
+        style={{
+            position: "absolute",
+            bottom: 0,
+            padding: "1rem 1rem",
+            textAlign: "left",
+        }}
+        >
+        <div style={{ display: "flex", alignItems: "center" }}>
+            <a
+            href="https://img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ marginRight: "0.5rem" }}
+            >
+            <img
+                src="https://img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"
+                alt="Logo"
+                style={{ width: "24px", height: "24px" }}
+            />
+            </a>
+            <a
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                fontSize: "12px",
+                color: "#007bff",
+                textDecoration: "none",
+                }}
+                href="http://beian.miit.gov.cn/"
+            >
+                琼ICP备2024046740号
+            </a>
+        </div>
+        </footer>
+    )
+}
