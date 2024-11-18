@@ -35,6 +35,8 @@ export default function Product({
     const [errorMessage, setErrorMessage] = useState("");
     const [qty, setQty] = useState("1");
 
+    const router = useRouter()
+
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {
@@ -61,10 +63,8 @@ export default function Product({
                 setLoading(false);
             }
         })
-    }, [params.id])
+    }, [params.id, router])
 
-
-    const router = useRouter()
     const addToCart = (e: React.FormEvent) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")

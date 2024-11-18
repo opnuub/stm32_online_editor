@@ -80,7 +80,7 @@ export default function Cart() {
             setErrorMessage("Please log in")
             setLoading(false);
         }
-    }, [change])
+    }, [change, router])
 
     const changeQuantity = (e:React.FormEvent, idx: string, qty: string) => {
         e.preventDefault()
