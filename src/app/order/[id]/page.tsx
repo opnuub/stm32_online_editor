@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from "next/link";
 import Message from "@/app/components/Message";
 import Loader from "@/app/components/Loader";
+import { userInfo } from "os";
 
 type OrderItem = {
     name: string
@@ -96,10 +97,10 @@ export default function Order({
                 }).then((res) => res.json()).then((data) => {
 			const a = document.createElement("a");
 			a.style.display = "none";
-			document.body.appendChild(a);
 			a.href = data["url"];
 			a.target = "_blank";
 			a.rel = 'noopener noreferrer';
+			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
 		})
@@ -131,18 +132,18 @@ export default function Order({
                 <Col md={9}>
                     <ListGroup variant='flush'>
                         <h2>订单状态</h2>
-                        {/* <ListGroup.Item>
+                        <ListGroup.Item>
+                            <p><strong>收货人: </strong>林妍</p>
                             <p>
-                                <strong>Shipping Address: </strong>
+                                <strong>寄送至: </strong>
                                 {data.shippingAddress.address}
                             </p>
-
                             {data.isDelivered ? (
                                 <Message variant='success'>{`Delivered on ${data.deliveredAt}`}</Message>
                             ) : (
-                                    <Message variant='warning'>Not Delivered</Message>
+                                    <Message variant='warning'>未送达</Message>
                                 )}
-                        </ListGroup.Item> */}
+                        </ListGroup.Item>
                         <ListGroup.Item>
                             <p>
                                 <strong>支付方式: </strong>
@@ -187,7 +188,7 @@ export default function Order({
                             {!data.isPaid ? (
                                 <>
                                 <ListGroup.Item>
-                                <h2>请支付</h2>
+                                <h2>实支付</h2>
                                 </ListGroup.Item>
 
                                 <ListGroup.Item>
