@@ -45,7 +45,7 @@ export default function Login() {
             if (res.ok) {
                 res.json().then((data) => {
                     localStorage.setItem('userInfo', JSON.stringify(data))
-                    router.back();
+                    router.push('/');
                 })
             } else {
                 setError(true);
