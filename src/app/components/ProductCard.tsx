@@ -28,8 +28,12 @@ export default function Product({
                 style={{ width: '100%', height: 'auto' }} unoptimized /> 
             </a>
             <Card.Body>
-                <a href={`/product/${product._id}`}>
-                    <Card.Title>
+                <a href={`/product/${product._id}`} style={{
+                color: 'black',
+                textDecoration: 'none',
+                transition: 'color 0.3s ease',
+                }}>
+                    <Card.Title style={{ color: 'black'}}>
                         <strong>{product.name}</strong>
                     </Card.Title>
                 </a>
