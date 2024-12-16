@@ -8,7 +8,6 @@ import Image from 'next/image'
 import Link from "next/link";
 import Message from "@/app/components/Message";
 import Loader from "@/app/components/Loader";
-import { userInfo } from "os";
 
 type OrderItem = {
     name: string
