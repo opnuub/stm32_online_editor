@@ -18,6 +18,8 @@ type Product = {
     brand: string;
     category: string;
     price: number;
+    minSize: number;
+    maxSize: number;
     countInStock: number;
     rating: number;
     numReviews: number;
@@ -34,6 +36,9 @@ export default function Product({
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [qty, setQty] = useState("1");
+    const [size, setSize] = useState("120");
+    const [minSize, setMinSize] = useState(120);
+    const [maxSize, setMaxSize] = useState(125);
 
     const router = useRouter()
 
@@ -55,6 +60,9 @@ export default function Product({
             if (res.ok) {
                 res.json().then((data) => {
                     setProduct(data);
+                    setSize(data.min_size);
+                    setMinSize(data.min_size);
+                    setMaxSize(data.max_size);
                     setLoading(false);
                 })
             } else {
@@ -78,6 +86,7 @@ export default function Product({
                 body: JSON.stringify({
                     idx: product._id,
                     qty: qty,
+                    size: size
                 })
             }).then((res) => {
                 if (res.ok) {
@@ -127,21 +136,29 @@ export default function Product({
                                     </Row>
                                 </ListGroup.Item>
                                 {isLoggedIn ? ( 
-                                <ListGroup.Item >
+                                <>
+                                <ListGroup.Item>
                                     <Row>
-                                        <Col md={9}>
-                                            <Button 
-                                            onClick={(e) => addToCart(e)}
-                                            className='btn-block' 
-                                            disabled={product.countInStock == 0} 
-                                            type='button' 
-                                            style={{ width: '100%', height: 'auto' }}
+                                        <Col>尺寸:</Col>
+                                        <Col><Form.Select
+                                                size='sm'
+                                                value={size}
+                                                onChange={(e) => setSize(e.target.value)}
                                             >
-                                                加入购物车
-                                            </Button>
-                                        </Col>
-                                        <Col md={3}>
-                                            <Form.Select
+                                                {
+                                                    [...Array.from({ length: (maxSize - minSize) / 5 + 1 }, (_, index: number) => (
+                                                        <option key={minSize + index * 5} value={minSize + index * 5}>
+                                                            {minSize + index * 5}
+                                                        </option>
+                                                    ))]
+                                                }
+                                        </Form.Select></Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>数量:</Col>
+                                        <Col><Form.Select
                                                 size='sm'
                                                 value={qty}
                                                 onChange={(e) => setQty(e.target.value)}
@@ -151,11 +168,21 @@ export default function Product({
                                                         <option key={x+1} value={x+1}>{x+1}</option>
                                                     ))
                                                 }
-                                            </Form.Select>
-                                        </Col>
+                                        </Form.Select></Col>
                                     </Row>
                                 </ListGroup.Item>
-                                ): <ListGroup.Item>
+                                <ListGroup.Item >
+                                    <Button 
+                                    onClick={(e) => addToCart(e)}
+                                    className='btn-block' 
+                                    disabled={product.countInStock == 0} 
+                                    type='button' 
+                                    style={{ width: '100%', height: 'auto' }}
+                                    >
+                                        加入购物车
+                                    </Button>
+                                </ListGroup.Item>
+                                </>): <ListGroup.Item>
                                     <Row className="d-flex justify-content-center align-items-center">请先登陆</Row>
                                 </ListGroup.Item>}
                             </ListGroup>

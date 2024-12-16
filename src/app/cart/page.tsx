@@ -13,6 +13,7 @@ import Loader from "../components/Loader";
 type Product = {
     _id: string;
     quantity: string;
+    size: number;
 }
 
 type FetchedProduct = {
@@ -27,6 +28,7 @@ type FetchedProduct = {
     rating: number;
     numReviews: number;
     quantity: string; // We'll add this from the products array
+    size: string;
 }
 
 export default function Cart() {
@@ -61,6 +63,7 @@ export default function Cart() {
                         data.forEach(product => {
                             fetch(`${process.env.SERVER}/api/products/${product._id}/`).then(res => res.json()).then(data => {
                                 data.quantity = product.quantity;
+                                data.size = product.size
                                 setCartItems(cartItems => [...cartItems, data]);
                             }).catch(err => {
                                 setErrorMessage(err)
@@ -77,7 +80,7 @@ export default function Cart() {
             })
         } else {
             setError(true)
-            setErrorMessage("Please log in")
+            setErrorMessage("请登录")
             setLoading(false);
         }
     }, [change, router])
@@ -173,8 +176,11 @@ export default function Cart() {
                                             <Col md={3}>
                                                 <Link href={`/product/${item._id}`}>{item.name}</Link>
                                             </Col>
-                                            <Col md={2}>
+                                            <Col md={1}>
                                                 ${item.price}
+                                            </Col>
+                                            <Col md={2}>
+                                                尺寸{item.size}
                                             </Col>
                                             <Col md={2}>
                                                 <Form.Select

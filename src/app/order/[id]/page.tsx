@@ -8,11 +8,13 @@ import Image from 'next/image'
 import Link from "next/link";
 import Message from "@/app/components/Message";
 import Loader from "@/app/components/Loader";
+import { userInfo } from "os";
 
 type OrderItem = {
     name: string
     product: number
     qty: number
+    size: number
     image: string
     price: number
 }
@@ -43,10 +45,12 @@ export default function Order({
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [change, setChange] = useState(false);
+    const [name, setName] = useState('')
 
     useEffect(() => {
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
+            setName(JSON.parse(userInfo).name)
             const decodedToken = jwtDecode(JSON.parse(userInfo).token);
             const currentTime = Date.now() / 1000;
             if (decodedToken.exp) {
@@ -132,7 +136,7 @@ export default function Order({
                     <ListGroup variant='flush'>
                         <h2>订单状态</h2>
                         <ListGroup.Item>
-                            <p><strong>收货人: </strong>林妍</p>
+                            <p><strong>收货人: </strong>{name}</p>
                             <p>
                                 <strong>寄送至: </strong>
                                 {data.shippingAddress.address}
@@ -170,7 +174,9 @@ export default function Order({
                                             <Col>
                                                 <Link href={`/product/${item.product}`}>{item.name}</Link>
                                             </Col>
-
+                                            <Col>
+                                                尺寸{item.size}
+                                            </Col>
                                             <Col md={4} className="d-flex justify-content-end">
                                                 {item.qty} X ¥{item.price} = ¥{(item.qty * item.price).toFixed(2)}
                                             </Col>
