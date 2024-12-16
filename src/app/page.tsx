@@ -61,34 +61,31 @@ export default function Shop() {
             }}
             >
             <div style={{flex: 1}}>
-                <Row>
                 <h2>商品目录</h2>
-                <ButtonGroup>
-                {['全部', '小学部', '中学部', '侨小', '侨中'].map((category) => (
-                <Button
-                    key={category}
-                    variant={filter === category ? 'dark' : 'outline-dark'}
-                    onClick={() => setFilter(category)}
-                >
-                    {category}
-                </Button>
-                ))}
-                </ButtonGroup>
-                </Row>
-                <Row>
-                    {isLoading ? <Loader /> 
+                {isLoading ? <Loader /> 
                     : error ? <Message variant="danger">{errorMessage}</Message> 
-                    : <Row>
-                        {filteredProducts.map((product: Product) => (
-                            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                                <Product product={product} />
-                            </Col>
+                    : <div><ButtonGroup style={{ width: '100%' }}>
+                        {['全部', '小学部', '中学部', '侨小', '侨中'].map((category) => (
+                        <Button
+                            key={category}
+                            variant={filter === category ? 'dark' : 'outline-dark'}
+                            onClick={() => setFilter(category)}
+                        >
+                            {category}
+                        </Button>
                         ))}
-                    </Row>
-                    } 
-                </Row>
-                </div>
-                <Footer />
+                        </ButtonGroup>
+                        <Row>
+                            {filteredProducts.map((product: Product) => (
+                                <Col key={product._id} sm={12} md={6} lg={3} xl={2}>
+                                    <Product product={product} />
+                                </Col>
+                            ))}
+                        </Row>
+                        </div>
+                } 
             </div>
+            <Footer />
+        </div>
     )
 }
