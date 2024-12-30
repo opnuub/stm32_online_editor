@@ -41,12 +41,33 @@ export default function Order({
 }) {
     const [data, setData] = useState<Order>();
     const [isLoading, setLoading] = useState(true);
+    const [link, setLink] = useState("");
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [change, setChange] = useState(false);
     const [name, setName] = useState('')
 
+    function handleVisibilityChange() {
+        // If document is no longer hidden, it means the user has come back
+        if (!document.hidden) {
+            const userInfo = localStorage.getItem("userInfo")
+            if (userInfo) {    
+                fetch(`${process.env.SERVER}/api/payment/verify/`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                    },
+                    body: JSON.stringify({
+                        orderId: params.id
+                    })
+                    }).then((res) => res.json()).then(() => setChange(!change))
+            }
+        }
+    }
+
     useEffect(() => {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
             setName(JSON.parse(userInfo).name)
@@ -75,39 +96,28 @@ export default function Order({
                             }
                         })
                 }
-            };       
+            };   
+            if (link == "") {
+                fetch(`${process.env.SERVER}/api/payment/init/`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                    },
+                    body: JSON.stringify({
+                        orderId: params.id
+                    })
+                    }).then((res) => res.json()).then((data) => setLink(data["url"]))    
+            }
         } else {
             setError(true)
             setErrorMessage("请登陆")
         }
         setLoading(false);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, [change, params.id])
-
-    const payment = (e: React.FormEvent) => {
-        e.preventDefault()
-        const userInfo = localStorage.getItem("userInfo")
-        if (userInfo) {    
-            fetch(`${process.env.SERVER}/api/payment/init/`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${JSON.parse(userInfo).token}`,
-                },
-                body: JSON.stringify({
-                    orderId: params.id
-                })
-                }).then((res) => res.json()).then((data) => {
-			const a = document.createElement("a");
-			a.style.display = "none";
-			a.href = data["url"];
-			a.target = "_blank";
-			a.rel = 'noopener noreferrer';
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-		})
-        }
-    }
 
     const verifyPayment = (e: React.FormEvent) => {
         e.preventDefault()
@@ -203,7 +213,9 @@ export default function Order({
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Button 
-                                    onClick={(e) => payment(e)}
+                                    href={link} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
                                     className='btn-block' 
                                     type='button' 
                                     style={{ width: '100%', height: 'auto' }}
