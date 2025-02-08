@@ -1,17 +1,23 @@
 import { Card } from "react-bootstrap"
 import Image from 'next/image'
 
+type Stock = {
+    id: number,
+    size: number,
+    countInStock: number,
+    product: number,
+}
+
 type Product = {
-    _id: string;
+    _id: number;
+    stocks: Stock[];
     name: string;
     image: string;
+    min_size: number;
+    max_size: number;
     description: string;
-    brand: string;
     category: string;
-    price: number;
-    countInStock: number;
-    rating: number;
-    numReviews: number;
+    price: string;
 }
 
 export default function Product({

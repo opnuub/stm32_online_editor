@@ -10,19 +10,23 @@ import Image from 'next/image'
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 
+type Stock = {
+    id: number,
+    size: number,
+    countInStock: number,
+    product: number,
+}
+
 type Product = {
-    _id: string;
+    _id: number;
+    stocks: Stock[];
     name: string;
     image: string;
+    min_size: number;
+    max_size: number;
     description: string;
-    brand: string;
     category: string;
-    price: number;
-    minSize: number;
-    maxSize: number;
-    countInStock: number;
-    rating: number;
-    numReviews: number;
+    price: string;
 }
 
 export default function Product({
@@ -36,9 +40,9 @@ export default function Product({
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [qty, setQty] = useState("1");
-    const [size, setSize] = useState("120");
-    const [minSize, setMinSize] = useState(120);
-    const [maxSize, setMaxSize] = useState(125);
+    const [size, setSize] = useState(160);
+    const [minSize, setMinSize] = useState(160);
+    const [maxSize, setMaxSize] = useState(165);
 
     const router = useRouter()
 
@@ -132,7 +136,7 @@ export default function Product({
                                 <ListGroup.Item>
                                     <Row>
                                         <Col>库存:</Col>
-                                        <Col className="d-flex justify-content-end">{product.countInStock}</Col>
+                                        <Col className="d-flex justify-content-end">{product.stocks.filter(stock => stock.size === size).map(stock => stock.countInStock)[0] || 0}</Col>
                                     </Row>
                                 </ListGroup.Item>
                                 {isLoggedIn ? ( 
@@ -143,7 +147,7 @@ export default function Product({
                                         <Col><Form.Select
                                                 size='sm'
                                                 value={size}
-                                                onChange={(e) => setSize(e.target.value)}
+                                                onChange={(e) => setSize(parseInt(e.target.value))}
                                             >
                                                 {
                                                     [...Array.from({ length: (maxSize - minSize) / 5 + 1 }, (_, index: number) => (
@@ -164,7 +168,7 @@ export default function Product({
                                                 onChange={(e) => setQty(e.target.value)}
                                             >
                                                 {
-                                                    [...Array(product.countInStock)].map((_, x: number) => (
+                                                    [...Array(product.stocks.filter(stock => stock.size === size).map(stock => stock.countInStock)[0] || 0)].map((_, x: number) => (
                                                         <option key={x+1} value={x+1}>{x+1}</option>
                                                     ))
                                                 }
@@ -175,7 +179,7 @@ export default function Product({
                                     <Button 
                                     onClick={(e) => addToCart(e)}
                                     className='btn-block' 
-                                    disabled={product.countInStock == 0} 
+                                    disabled={(product.stocks.filter(stock => stock.size === size).map(stock => stock.countInStock)[0] || 0) == 0} 
                                     type='button' 
                                     style={{ width: '100%', height: 'auto' }}
                                     >

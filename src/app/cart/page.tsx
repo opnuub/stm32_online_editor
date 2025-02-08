@@ -10,23 +10,30 @@ import Link from "next/link";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 
+type Stock = {
+    id: number,
+    size: number,
+    countInStock: number,
+    product: number,
+}
+
 type Product = {
     _id: string;
     quantity: string;
     size: number;
+    stocks: Stock[]
 }
 
 type FetchedProduct = {
     _id: string;
     name: string;
     image: string;
+    stocks: Stock[]
     description: string;
     brand: string;
     category: string;
     price: number;
     countInStock: number;
-    rating: number;
-    numReviews: number;
     quantity: string; // We'll add this from the products array
     size: string;
 }
@@ -65,13 +72,14 @@ export default function Cart() {
                                 data.quantity = product.quantity;
                                 data.size = product.size
                                 setCartItems(cartItems => [...cartItems, data]);
+                                setLoading(false)
                             }).catch(err => {
                                 setErrorMessage(err)
                                 setError(true)
+                                setLoading(false)
                             })
                         })
                     })
-                    setLoading(false);
                 } else {
                     setErrorMessage(res.statusText);
                     setError(true);
@@ -85,7 +93,7 @@ export default function Cart() {
         }
     }, [change, router])
 
-    const changeQuantity = (e:React.FormEvent, idx: string, qty: string) => {
+    const changeQuantity = (e:React.FormEvent, idx: string, qty: string, size: string) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
@@ -98,6 +106,7 @@ export default function Cart() {
                 body: JSON.stringify({
                     idx: idx,
                     qty: qty,
+                    size: size
                 })
             }).then((res) => res.json()).then(() => {
                 setChange(!change)
@@ -108,7 +117,7 @@ export default function Cart() {
         }
     }
 
-    const deleteItem = (e: React.FormEvent, id: string) => {
+    const deleteItem = (e: React.FormEvent, id: string, size: string) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
@@ -121,6 +130,7 @@ export default function Cart() {
                 body: JSON.stringify({
                     idx: id,
                     qty: 0,
+                    size: size
                 })
             }).then((res) => res.json()).then(() => {
                 setChange(!change)
@@ -186,17 +196,17 @@ export default function Cart() {
                                                 <Form.Select
                                                     size='sm'
                                                     value={item.quantity}
-                                                    onChange={(e) => changeQuantity(e, item._id, e.target.value)}
+                                                    onChange={(e) => changeQuantity(e, item._id, e.target.value, item.size)}
                                                 >
                                                     {
-                                                        [...Array(item.countInStock)].map((_, x: number) => (
+                                                        [...Array(item.stocks.filter(stock => stock.size === parseInt(item.size)).map(stock => stock.countInStock)[0] || 0)].map((_, x: number) => (
                                                             <option key={x+1} value={x+1}>{x+1}</option>
                                                         ))
                                                     }
                                                 </Form.Select>
                                             </Col>
                                             <Col md={1}>
-                                                <Button type='button' variant='light' onClick={(e) => deleteItem(e, item._id)}>
+                                                <Button type='button' variant='light' onClick={(e) => deleteItem(e, item._id, item.size)}>
                                                     <i className="fas fa-trash"></i>
                                                 </Button>
                                             </Col>
@@ -211,7 +221,7 @@ export default function Cart() {
                             <ListGroup variant="flush">
                                 <ListGroup.Item>
                                     <h2>价格明细</h2>
-                                    ${cartItems.reduce((acc, item) => acc + Number(item.quantity) * item.price, 0)}
+                                    ¥{cartItems.reduce((acc, item) => acc + Number(item.quantity) * item.price, 0)}
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Button 
