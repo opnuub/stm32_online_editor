@@ -36,11 +36,19 @@ export default function Shop() {
     const [page, setPage] = useState(1);
     
     useEffect(() => {
-        fetch(`${process.env.SERVER}/api/products/`).then((res) => {
+        fetch(`${process.env.SERVER}/api/products/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                filter: filter,
+                page: page,
+            })
+        }).then((res) => {
             if (res.ok) {
                 res.json().then((data) => {
                     setProducts(data);
-                    setFilteredProducts(data);
                     setLoading(false);
                 })
             } else {
@@ -49,30 +57,21 @@ export default function Shop() {
                 setLoading(false);
             }
         })
-    }, [])
-
-    useEffect(() => {
-        if (filter === '全部') {
-            setFilteredProducts(products);
-            setPage(1);
-        } else {
-            setFilteredProducts(products.filter((product) => product.name.includes(filter)))
-        }
-    }, [filter])
-
-    const productsToDisplay = filter === "全部" ? filteredProducts.slice((page - 1) * 4, page * 4) : filteredProducts;
-  
-    const totalPages = filter === "全部" ? Math.ceil(filteredProducts.length / 4) : 1;
+    }, [filter, page])
 
     const handlePrev = () => {
         if (page > 1) {
-          setPage(page - 1);
+            setPage(page - 1);
+            setLoading(true)
+            setError(false)
         }
       };
     
     const handleNext = () => {
-        if (page < totalPages) {
+        if (page < 6) {
             setPage(page + 1);
+            setLoading(true)
+            setError(false)
         }
     };
 
@@ -86,57 +85,61 @@ export default function Shop() {
             >
             <div style={{flex: 1}}>
                 <h2>商品目录</h2>
-                {isLoading ? <Loader /> 
-                    : error ? <Message variant="danger">{errorMessage}</Message> 
-                    : <div><ButtonGroup style={{ width: '100%' }}>
-                        {['全部', '小学部', '中学部', '侨小', '侨中'].map((category) => (
-                        <Button
-                            key={category}
-                            variant={filter === category ? 'dark' : 'outline-dark'}
-                            onClick={() => setFilter(category)}
-                        >
-                            {category}
-                        </Button>
+                <div><ButtonGroup style={{ width: '100%' }}>
+                    {['全部', '小学部', '中学部', '侨小', '侨中'].map((category) => (
+                    <Button
+                        key={category}
+                        variant={filter === category ? 'dark' : 'outline-dark'}
+                        onClick={() => {
+                            setLoading(true)
+                            setFilter(category)
+                        }}
+                    >
+                        {category}
+                    </Button>
+                    ))}
+                    </ButtonGroup>
+                    {isLoading ? <div className="py-5"><Loader /></div>
+                    : error ?<div className="py-2"><Message variant="danger">{errorMessage}</Message></div>
+                    :
+                    <Row>
+                        {products.map((product: Product) => (
+                            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                                <Product product={product} />
+                            </Col>
                         ))}
-                        </ButtonGroup>
-                        <Row>
-                            {productsToDisplay.map((product: Product) => (
-                                <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                                    <Product product={product} />
-                                </Col>
-                            ))}
-                        </Row>
-                        {filter === "全部" && totalPages > 1 && (
-                            <div
-                                className="pagination-buttons"
-                                style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                marginTop: "20px",
-                                }}
+                    </Row>
+                    }
+                    {filter === "全部" && (
+                        <div
+                            className="pagination-buttons"
+                            style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: "20px",
+                            }}
+                        >
+                            <Button
+                            variant="secondary"
+                            onClick={handlePrev}
+                            disabled={page === 1}
                             >
-                                <Button
-                                variant="secondary"
-                                onClick={handlePrev}
-                                disabled={page === 1}
-                                >
-                                上一页
-                                </Button>
-                                <span style={{ margin: "0 10px" }}>
-                                第{page}页, 共{totalPages}页
-                                </span>
-                                <Button
-                                variant="secondary"
-                                onClick={handleNext}
-                                disabled={page === totalPages}
-                                >
-                                下一页
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-                } 
+                            上一页
+                            </Button>
+                            <span style={{ margin: "0 10px" }}>
+                            第{page}页, 共6页
+                            </span>
+                            <Button
+                            variant="secondary"
+                            onClick={handleNext}
+                            disabled={page === 6}
+                            >
+                            下一页
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </div>
             <Footer />
         </div>
