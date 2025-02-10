@@ -29,7 +29,6 @@ type Product = {
 export default function Shop() {
     const [products, setProducts] = useState<Product[]>([]);
     const [filter, setFilter] = useState('全部');
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState("");

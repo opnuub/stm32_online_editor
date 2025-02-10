@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Row, Col, ListGroup, Button, Card } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
+import {isMobile} from 'react-device-detect';
 
 import Image from 'next/image'
 import Link from "next/link";
@@ -102,10 +103,11 @@ export default function Order({
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                        Authorization: `Bearer ${JSON.parse(userInfo).token}`,  
                     },
                     body: JSON.stringify({
-                        orderId: params.id
+                        orderId: params.id,
+                        device: isMobile.toString(),
                     })
                     }).then((res) => res.json()).then((data) => setLink(data["url"]))    
             }
