@@ -72,14 +72,12 @@ export default function Cart() {
                                 data.quantity = product.quantity;
                                 data.size = product.size
                                 setCartItems(cartItems => [...cartItems, data]);
-                                setLoading(false)
                             }).catch(err => {
                                 setErrorMessage(err)
                                 setError(true)
-                                setLoading(false)
                             })
                         })
-                    })
+                    }).then(() => setLoading(false))
                 } else {
                     setErrorMessage(res.statusText);
                     setError(true);
