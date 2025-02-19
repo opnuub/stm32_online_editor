@@ -46,13 +46,13 @@ export default function Order({
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [change, setChange] = useState(false);
-    const [name, setName] = useState('')
+    const [name, setName] = useState('');
+    const [isPaid, setIsPaid] = useState(false);
 
     function handleVisibilityChange() {
-        // If document is no longer hidden, it means the user has come back
         if (!document.hidden) {
             const userInfo = localStorage.getItem("userInfo")
-            if (userInfo) {    
+            if (userInfo && !isPaid) {    
                 fetch(`${process.env.SERVER}/api/payment/verify/`, {
                     method: "POST",
                     headers: {
@@ -90,10 +90,17 @@ export default function Order({
                             if (res.ok) {
                                 res.json().then((data) => {
                                     setData(data);
+                                    setIsPaid(data.isPaid);
                                 })
                             } else {
-                                setError(true);
-                                setErrorMessage("Unauthorised")
+                                if (res.status == 401) {
+                                    setErrorMessage("个别商品缺货, 请重新下单")
+                                    setLink("False")
+                                    setError(true)
+                                } else {
+                                    setError(true);
+                                    setErrorMessage("Unauthorised")
+                                }
                             }
                         })
                 }
@@ -153,7 +160,7 @@ export default function Order({
                                 {data.shippingAddress.address}
                             </p>
                             {data.isDelivered ? (
-                                <Message variant='success'>{`Delivered on ${data.deliveredAt}`}</Message>
+                                <Message variant='success'>已送达</Message>
                             ) : (
                                     <Message variant='warning'>未送达</Message>
                                 )}
@@ -164,13 +171,13 @@ export default function Order({
                                 {data.paymentMethod}
                             </p>
                             {data.isPaid ? (
-                                <Message variant='success'>{`Paid on ${data.paidAt}`}</Message>
+                                <Message variant='success'>{`支付日期: ${data.paidAt}`}</Message>
                             ) : (
                                     <Message variant='warning'>未支付</Message>
                                 )}
                         </ListGroup.Item>
                         <br></br>
-                        {data.orders.length === 0 ? <Message variant='info'>Order is empty</Message> 
+                        {data.orders.length === 0 ? <Message variant='info'>订单不存在</Message> 
                         : (
                             <ListGroup variant='flush'>
                                 {data.orders.map((item, index) => (
