@@ -70,10 +70,10 @@ export default function Profile() {
         e.preventDefault()
         if (password != confirmPassword) {
             setError(true)
-            setErrorMessage("Password does not match")
+            setErrorMessage("密码不匹配")
         } else if (password.length < 8) {
             setError(true)
-            setErrorMessage("Your password must be at least 8 characters")
+            setErrorMessage("密码必须超过8个字")
         } else {
             const userInfo = localStorage.getItem("userInfo")
             if (userInfo) {
@@ -98,7 +98,7 @@ export default function Profile() {
                     } else {
                         setError(true)
                         setSuccess(false)
-                        setErrorMessage("Email already exists")
+                        setErrorMessage("账号名冲突")
                     }
                 })
             } else {
@@ -131,11 +131,11 @@ export default function Profile() {
                     <Button type='submit' variant='primary' className="my-2">更改密码</Button>
                 </Form>
                 { error && <Message variant="danger">{errorMessage}</Message>}
-                { success && <Message variant="success">Profile Details Updated</Message>}
+                { success && <Message variant="success">账号信息已更新</Message>}
             </Col>
             <Col md={9}>
                 <h2>订单</h2>
-                {orders.length === 0 ? <Message variant="info">No orders made yet</Message> : (
+                {orders.length === 0 ? <Message variant="info">暂无订单可显示</Message> : (
                     <Table striped responsive className='table-sm'>
                         <thead>
                             <tr>
