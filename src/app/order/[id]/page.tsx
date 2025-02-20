@@ -19,13 +19,21 @@ type OrderItem = {
     price: number
 }
 
+type User = {
+    id: string
+    username: string
+    email: string
+    name: string
+    is_admin: string
+}
+
 type Order = {
     _id: number;
     orders: OrderItem[];
     shippingAddress: {
         address: string
     }
-    user: object
+    user: User
     paymentMethod: string;
     totalPrice: string;
     isPaid: boolean;
@@ -154,7 +162,7 @@ export default function Order({
                     <ListGroup variant='flush'>
                         <h2>订单状态</h2>
                         <ListGroup.Item>
-                            <p><strong>收货人: </strong>{name}</p>
+                            <p><strong>收货人: </strong>{data.user.name}</p>
                             <p>
                                 <strong>寄送至: </strong>
                                 {data.shippingAddress.address}
