@@ -54,7 +54,6 @@ export default function Order({
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [change, setChange] = useState(false);
-    const [name, setName] = useState('');
     const [isPaid, setIsPaid] = useState(false);
 
     function handleVisibilityChange() {
@@ -79,7 +78,6 @@ export default function Order({
         document.addEventListener('visibilitychange', handleVisibilityChange);
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
-            setName(JSON.parse(userInfo).name)
             const decodedToken = jwtDecode(JSON.parse(userInfo).token);
             const currentTime = Date.now() / 1000;
             if (decodedToken.exp) {
