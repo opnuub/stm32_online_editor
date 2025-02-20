@@ -127,7 +127,7 @@ export default function Admin() {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${JSON.parse(userInfo).token}`,
                 },
-            }).then((res) => res.json()).then(() => setLoadingOrder(false))
+            }).then((res) => res.json()).then(() => getOrders())
         }
     }
 
