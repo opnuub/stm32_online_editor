@@ -158,7 +158,7 @@ export default function Admin() {
                             <ListGroup.Item key={id}>
                                 <Row>
                                     <Col md={1} className="d-flex justify-content-end">
-                                    <Image src={`${process.env.SERVER}/static${item.image}`} alt={item.name} width="0"
+                                    <Image src={item.image} alt={item.name} width="0"
                                         height="0"
                                         sizes="100vw"
                                         style={{ width: '100%', height: 'auto' }}/> 

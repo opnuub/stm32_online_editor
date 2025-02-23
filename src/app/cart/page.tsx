@@ -175,7 +175,7 @@ export default function Cart() {
                                     <ListGroup.Item key={index} >
                                         <Row className="d-flex align-items-center">
                                             <Col md={2}>
-                                                <Image src={`${process.env.SERVER}/static${item.image}`}
+                                                <Image src={item.image}
                                                 alt={item.name} width="0"
                                                 height="0"
                                                 sizes="100vw"

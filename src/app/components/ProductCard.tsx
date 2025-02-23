@@ -28,7 +28,7 @@ export default function Product({
     return (
         <Card className="my-3 p-3 rounded">
             <a href={`/product/${product._id}`}>
-                <Image src={`${process.env.SERVER}/static${product.image}`} alt={product.name} width="0"
+                <Image src={product.image} alt={product.name} width="0"
                 height="0"
                 sizes="100vw"
                 style={{ width: '100%', height: 'auto' }} unoptimized /> 

@@ -81,6 +81,23 @@ export default function AdminProduct(
             router.back();
         }
     }, [params.id, router])
+
+    const uploadFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        const userInfo = localStorage.getItem("userInfo")
+        if (!e.target.files || !userInfo) return;
+        const file = e.target.files[0]
+        const formData = new FormData()
+        formData.append('image', file)
+        formData.append('id', params.id)
+        fetch(`${process.env.SERVER}/api/products/upload/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+            },
+            body: formData
+        })
+    }
     
     const updateProduct = (e: React.FormEvent<HTMLFormElement>) => {
         setSuccess(false)
@@ -157,6 +174,10 @@ export default function AdminProduct(
                     <Form.Group controlId='name'>
                         <Form.Label>名称</Form.Label>
                         <Form.Control type='text' value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId='image'>
+                        <Form.Label>选择新照片</Form.Label>
+                        <Form.Control type='file' onChange={uploadFileHandler}></Form.Control>
                     </Form.Group>
                     <Form.Group controlId='minSize'>
                         <Form.Label>最小尺寸</Form.Label>

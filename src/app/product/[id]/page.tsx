@@ -113,7 +113,7 @@ export default function Product({
                 <Link href='/' className='btn btn-light my-3'>返回商品目录</Link>
                 <Row>
                     <Col md={6}>
-                        <Image src={`${process.env.SERVER}/static${product.image}`} alt={product.name} width="0"
+                        <Image src={product.image} alt={product.name} width="0"
                         height="0"
                         sizes="100vw"
                         style={{ width: '100%', height: 'auto' }} unoptimized /> 

@@ -7,10 +7,8 @@ const nextConfig = {
     images: {
         remotePatterns: [
           {
-            protocol: 'http',
-            hostname: process.env.HOST,
-            port: '8000',
-            pathname: '/images/**',
+            protocol: 'https',
+            hostname: "longfei-cn.s3.ap-southeast-1.amazonaws.com",
           },
         ],
       },
