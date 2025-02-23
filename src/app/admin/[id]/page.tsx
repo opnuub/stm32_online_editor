@@ -84,6 +84,7 @@ export default function AdminProduct(
 
     const uploadFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
+        setSuccess(false)
         const userInfo = localStorage.getItem("userInfo")
         if (!e.target.files || !userInfo) return;
         const file = e.target.files[0]
@@ -96,6 +97,17 @@ export default function AdminProduct(
                 Authorization: `Bearer ${JSON.parse(userInfo).token}`,
             },
             body: formData
+        }).then((res) => {
+            if (res.ok) {
+                res.json().then(() => {
+                    setSuccess(true)
+                    setError(false)
+                })
+            } else {
+                setError(true)
+                setSuccess(false)
+                setErrorMessage(res.statusText)
+            }
         })
     }
     
