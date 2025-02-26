@@ -41,6 +41,12 @@ type Order = {
     isDelivered: boolean;
     deliveredAt: string;
     createdAt: string;
+    request: string;
+}
+
+type Response = {
+    order: Order,
+    url: string
 }
 
 export default function Order({
@@ -87,16 +93,21 @@ export default function Order({
                     setErrorMessage("请重新登陆")
                 } else {
                     fetch(`${process.env.SERVER}/api/orders/${params.id}/`, {
-                        method: "GET",
+                        method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
                             Authorization: `Bearer ${JSON.parse(userInfo).token}`,
                         },
+                        body: JSON.stringify({
+                            device: isMobile
+                        })
                         }).then((res) => {
                             if (res.ok) {
-                                res.json().then((data) => {
-                                    setData(data);
-                                    setIsPaid(data.isPaid);
+                                res.json().then((res: Response) => {
+                                    setData(res.order);
+                                    setIsPaid(res.order.isPaid);
+                                    setLink(res.url)
+                                    setLoading(false);
                                 })
                             } else {
                                 if (res.status == 401) {
@@ -107,32 +118,20 @@ export default function Order({
                                     setError(true);
                                     setErrorMessage("Unauthorised")
                                 }
+                                setLoading(false);
                             }
                         })
                 }
-            };   
-            if (link == "" && !isPaid) {
-                fetch(`${process.env.SERVER}/api/payment/init/`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${JSON.parse(userInfo).token}`,  
-                    },
-                    body: JSON.stringify({
-                        orderId: params.id,
-                        device: isMobile.toString(),
-                    })
-                    }).then((res) => res.json()).then((data) => setLink(data["url"]))    
-            }
+            };
         } else {
             setError(true)
             setErrorMessage("请登陆")
         }
-        setLoading(false);
+        
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [change, params.id, isPaid])
+    }, [change, params.id])
 
     const verifyPayment = (e: React.FormEvent) => {
         e.preventDefault()

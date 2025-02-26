@@ -10,37 +10,20 @@ import Link from "next/link";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 
-type Stock = {
-    id: number,
-    size: number,
-    countInStock: number,
-    product: number,
-}
-
 type Product = {
     _id: string;
-    quantity: string;
-    size: number;
-    stocks: Stock[]
-}
-
-type FetchedProduct = {
-    _id: string;
+    quantity: number;
+    size: string;
+    price: number;
     name: string;
     image: string;
-    stocks: Stock[]
-    description: string;
-    brand: string;
-    category: string;
-    price: number;
     countInStock: number;
-    quantity: string; // We'll add this from the products array
-    size: string;
 }
 
 export default function Cart() {
-    const [cartItems, setCartItems] = useState<FetchedProduct[]>([]);
+    const [cartItems, setCartItems] = useState<Product[]>([]);
     const [isLoading, setLoading] = useState(true);
+    const [creating, setCreating] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [change, setChange] = useState(true)
@@ -66,24 +49,16 @@ export default function Cart() {
                 },
                 }).then((res) => {
                 if (res.ok) {
-                    res.json().then((data: Product[]) => {
-                        data.forEach(product => {
-                            fetch(`${process.env.SERVER}/api/products/${product._id}/`).then(res => res.json()).then(data => {
-                                data.quantity = product.quantity;
-                                data.size = product.size
-                                setCartItems(cartItems => [...cartItems, data]);
-                            }).catch(err => {
-                                setErrorMessage(err)
-                                setError(true)
-                            })
-                        })
-                    }).then(() => setLoading(false))
+                    res.json().then((data) => {
+                        setCartItems(data)
+                        setLoading(false)
+                    })
                 } else {
                     setErrorMessage(res.statusText);
                     setError(true);
                     setLoading(false);
                 }
-            })
+                })
         } else {
             setError(true)
             setErrorMessage("请登录")
@@ -93,6 +68,7 @@ export default function Cart() {
 
     const changeQuantity = (e:React.FormEvent, idx: string, qty: string, size: string) => {
         e.preventDefault()
+        setLoading(true)
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {    
             fetch(`${process.env.SERVER}/api/cart/update/`, {
@@ -117,9 +93,9 @@ export default function Cart() {
 
     const deleteItem = (e: React.FormEvent, id: string, size: string) => {
         e.preventDefault()
+        setLoading(true)
         const userInfo = localStorage.getItem("userInfo")
-        if (userInfo) {  
-            setLoading(true)
+        if (userInfo) {
             fetch(`${process.env.SERVER}/api/cart/update/`, {
                 method: "PUT",
                 headers: {
@@ -135,7 +111,6 @@ export default function Cart() {
                 setChange(!change)
                 setCartItems([])
             })
-            setLoading(false)
         } else {
             router.back()
         }
@@ -144,7 +119,7 @@ export default function Cart() {
 
     const checkout = (e: React.FormEvent) => {
         e.preventDefault()
-        setLoading(true)
+        setCreating(true)
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
             fetch(`${process.env.SERVER}/api/orders/add/`, {
@@ -153,7 +128,11 @@ export default function Cart() {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${JSON.parse(userInfo).token}`
                 },
-            }).then((res) => res.json()).then((data) => router.push(`/order/${data}`), () => {
+            }).then((res) => res.json()).then((data) => {
+                setCreating(true);
+                router.push(`/order/${data}`)
+            }, () => {
+                setCreating(false);
                 setError(true)
                 setErrorMessage("Create order failed, try again")
                 setChange(!change)
@@ -163,13 +142,12 @@ export default function Cart() {
         }
     }
 
-    return isLoading ? <Loader /> : 
-            error ? <Message variant="danger">{errorMessage}</Message> :
-            (
+    return  creating ? <div><Row className="my-1"><Message variant="info">创建订单中...</Message></Row><Row className="my-1"><Loader /></Row></div> :
+            error ? <Message variant="danger">{errorMessage}</Message> : (
                 <Row>
                     <Col md={8}>
                         <h2>购物车</h2>
-                        {cartItems.length === 0 ? (
+                        {isLoading ? <Loader /> : cartItems.length === 0 ? (
                             <Message variant='info'>
                                 购物车暂时是空的～
                             </Message>
@@ -189,7 +167,7 @@ export default function Cart() {
                                                 <Link href={`/product/${item._id}`}>{item.name}</Link>
                                             </Col>
                                             <Col md={1}>
-                                                ${item.price}
+                                                ¥{item.price}
                                             </Col>
                                             <Col md={2}>
                                                 尺寸{item.size}
@@ -201,7 +179,7 @@ export default function Cart() {
                                                     onChange={(e) => changeQuantity(e, item._id, e.target.value, item.size)}
                                                 >
                                                     {
-                                                        [...Array(item.stocks.filter(stock => stock.size === parseInt(item.size)).map(stock => stock.countInStock)[0] || 0)].map((_, x: number) => (
+                                                        [...Array(item.countInStock)].map((_, x: number) => (
                                                             <option key={x+1} value={x+1}>{x+1}</option>
                                                         ))
                                                     }
@@ -230,7 +208,7 @@ export default function Cart() {
                                         type='button' 
                                         className="btn-block"
                                         style={{ width: '100%', height: 'auto' }}
-                                        disabled={cartItems.length === 0}
+                                        disabled={cartItems.length === 0 || isLoading}
                                         onClick={(e) => checkout(e)}
                                     >
                                         创建订单
