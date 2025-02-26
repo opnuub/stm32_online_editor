@@ -144,6 +144,7 @@ export default function Cart() {
 
     const checkout = (e: React.FormEvent) => {
         e.preventDefault()
+        setLoading(true)
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
             fetch(`${process.env.SERVER}/api/orders/add/`, {
