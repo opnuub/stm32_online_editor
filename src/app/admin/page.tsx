@@ -192,11 +192,20 @@ export default function Admin() {
                         </thead>
 
                         <tbody>
-                            {orders.map(order => (
+                        {orders.filter(order => order.isPaid).sort((a: Order, b: Order) => {
+                                if (Number(b.isPaid) !== Number(a.isPaid)) {
+                                    return Number(b.isPaid) - Number(a.isPaid); // Paid orders first
+                                }
+                                if (a.isPaid && b.isPaid) {
+                                    return new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime(); // Earlier paid first
+                                }
+                                return Number(a._id) - Number(b._id); // Lower _id first
+                            })
+                            .map(order => (
                                 <tr key={order._id}>
                                     <td>{order._id}</td>
                                     <td>{order.createdAt.substring(0, 10)}</td>
-                                    <td>${order.totalPrice}</td>
+                                    <td>¥{order.totalPrice}</td>
                                     <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
                                         <i className='fas fa-times' style={{ color: 'red' }}></i>
                                     )}</td>

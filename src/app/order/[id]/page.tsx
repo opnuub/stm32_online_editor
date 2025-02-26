@@ -54,7 +54,7 @@ export default function Order({
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [change, setChange] = useState(false);
-    const [isPaid, setIsPaid] = useState(false);
+    const [isPaid, setIsPaid] = useState(true);
 
     function handleVisibilityChange() {
         if (!document.hidden) {
@@ -111,7 +111,7 @@ export default function Order({
                         })
                 }
             };   
-            if (link == "") {
+            if (link == "" && !isPaid) {
                 fetch(`${process.env.SERVER}/api/payment/init/`, {
                     method: "POST",
                     headers: {
@@ -132,12 +132,12 @@ export default function Order({
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [change, params.id])
+    }, [change, params.id, isPaid])
 
     const verifyPayment = (e: React.FormEvent) => {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
-        if (userInfo) {    
+        if (userInfo && !isPaid) {    
             fetch(`${process.env.SERVER}/api/payment/verify/`, {
                 method: "POST",
                 headers: {
@@ -152,7 +152,7 @@ export default function Order({
     }
 
     return isLoading ? <Loader /> :
-    error ? <Message variant="danger">{errorMessage}</Message> :
+    error ? (!isPaid && <Message variant="danger">{errorMessage}</Message>) :
     data && (
         <>
             <Row>

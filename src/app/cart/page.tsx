@@ -119,6 +119,7 @@ export default function Cart() {
         e.preventDefault()
         const userInfo = localStorage.getItem("userInfo")
         if (userInfo) {  
+            setLoading(true)
             fetch(`${process.env.SERVER}/api/cart/update/`, {
                 method: "PUT",
                 headers: {
@@ -134,9 +135,11 @@ export default function Cart() {
                 setChange(!change)
                 setCartItems([])
             })
+            setLoading(false)
         } else {
             router.back()
         }
+        
     }
 
     const checkout = (e: React.FormEvent) => {
