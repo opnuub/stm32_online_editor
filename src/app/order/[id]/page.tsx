@@ -104,7 +104,10 @@ export default function Order({
                         }).then((res) => {
                             if (res.ok) {
                                 res.json().then((res: Response) => {
+<<<<<<< HEAD
                                     console.log(res)
+=======
+>>>>>>> 8773516916ffed201c980389405435ff0b13e439
                                     setData(res.order);
                                     setIsPaid(res.order.isPaid);
                                     setLink(res.url)
