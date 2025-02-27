@@ -131,6 +131,28 @@ export default function Admin() {
         }
     }
 
+    const download = () => {
+        const userInfo = localStorage.getItem("userInfo")
+        if (userInfo) {
+            fetch(`${process.env.SERVER}/api/payment/download/`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(userInfo).token}`,
+                }, 
+            }).then((res) => res.blob()).then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "文件.xlsx"); // Adjust filename if needed
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            })
+        };
+    }
+
     return init ? <Loader /> : isAdmin ?
         <div>
             <Row>
@@ -175,7 +197,8 @@ export default function Admin() {
             </Col>
             <Col md={6}>
                 <Row>
-                    <Col md={9}><h2>订单</h2></Col>
+                    <Col md={6}><h2>订单</h2></Col>
+                    <Col md={3}><Button onClick={() => download()}>下载订单信息</Button></Col>
                     <Col md={3}><Button onClick={() => verifyAll()}>刷新支付状态</Button></Col>
                 </Row>
                 {loadingOrder ? <Loader /> : orders.length === 0 ? <Message variant="info">暂无订单可显示</Message> : (
