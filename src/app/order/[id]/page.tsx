@@ -114,6 +114,7 @@ export default function Order({
                                     setErrorMessage("个别商品缺货, 请重新下单")
                                     setLink("False")
                                     setError(true)
+                                    console.log(isPaid)
                                 } else {
                                     setError(true);
                                     setErrorMessage("Unauthorised")
@@ -150,9 +151,10 @@ export default function Order({
         }
     }
 
-    return isLoading ? <Loader /> :
-    error ? (!isPaid && <Message variant="danger">{errorMessage}</Message>) :
-    data && (
+    return isLoading ? <Loader /> : 
+    <div>
+        {error && <Message variant="danger">{errorMessage}</Message>}
+        {data && (
         <>
             <Row>
                 <Col md={9}>
@@ -263,5 +265,6 @@ export default function Order({
                 </Col>
             </Row>
         </>
-    )
+    )}
+    </div>
 }

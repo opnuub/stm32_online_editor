@@ -30,7 +30,7 @@ export default function Footer() {
                 }}
                 href="http://beian.miit.gov.cn/"
             >
-                琼ICP备2024046740号
+                琼ICP备2024046740号 琼公网安备46020002000219号
             </a>
         </div>
         </footer>
